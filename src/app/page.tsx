@@ -61,9 +61,6 @@ export default function HomePage() {
           <div className="container relative z-10">
             <ScrollReveal>
               <div className="max-w-3xl">
-                <div className="eyebrow mb-6">
-                  Built for CBC · Free onboarding
-                </div>
                 <h1
                   className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-[-0.02em] leading-[1.05] text-[var(--text-primary)]"
                   style={{ fontFamily: "Geist, Inter, sans-serif" }}
@@ -101,12 +98,11 @@ export default function HomePage() {
         <section id="roles" className="py-24 lg:py-32 relative">
           <div className="container">
             <ScrollReveal>
-              <div className="eyebrow mb-4">Who are you?</div>
               <h2
                 className="text-2xl sm:text-3xl lg:text-4xl font-medium tracking-[-0.02em] text-[var(--text-primary)]"
                 style={{ fontFamily: "Geist, Inter, sans-serif" }}
               >
-                Learning that puts students first.
+                Make Learning Fun.
               </h2>
             </ScrollReveal>
 
