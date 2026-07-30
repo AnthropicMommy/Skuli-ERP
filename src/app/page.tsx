@@ -1,14 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { useParallaxTilt } from "@/hooks/use-parallax-tilt";
 import { useScrollParallax } from "@/hooks/use-scroll-parallax";
 
 export default function HomePage() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroTiltStyle = useParallaxTilt(heroRef, { maxTilt: 8 });
   const parallaxOffset = useScrollParallax(0.15);
   const [scrolled, setScrolled] = useState(false);
 
@@ -62,9 +59,8 @@ export default function HomePage() {
           />
 
           <div className="container relative z-10">
-            <div className="grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
-              {/* Left: text */}
-              <ScrollReveal>
+            <ScrollReveal>
+              <div className="max-w-3xl">
                 <div className="eyebrow mb-6">
                   Built for CBC · Free onboarding
                 </div>
@@ -93,32 +89,8 @@ export default function HomePage() {
                     Explore features
                   </a>
                 </div>
-              </ScrollReveal>
-
-              {/* Right: 3D tilted mockup */}
-              <ScrollReveal className="hidden lg:block" delay={120}>
-                <div ref={heroRef} style={heroTiltStyle}>
-                  <div className="relative">
-                    <div
-                      className="absolute -inset-4 rounded-2xl"
-                      style={{
-                        background: "radial-gradient(ellipse at center, rgba(125, 211, 252, 0.08), transparent 70%)",
-                      }}
-                    />
-                    <div className="relative aspect-[4/3] w-full max-w-lg ml-auto">
-                      <DashboardMockup />
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-
-              {/* Mobile: static mockup */}
-              <ScrollReveal className="lg:hidden" delay={120}>
-                <div className="aspect-[4/3] w-full max-w-sm mx-auto">
-                  <DashboardMockup />
-                </div>
-              </ScrollReveal>
-            </div>
+              </div>
+            </ScrollReveal>
           </div>
 
           {/* Bottom fade */}
@@ -212,10 +184,10 @@ export default function HomePage() {
                       {role.description}
                     </p>
                     <div
-                      className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                      className={`inline-flex items-center justify-center h-9 px-4 rounded-lg text-sm font-medium transition-all ${
                         role.accent
-                          ? "text-primary"
-                          : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "border border-border text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
                       }`}
                     >
                       {role.cta}
@@ -377,95 +349,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-/* ─── Report Card Mockup (inline) ─── */
-function DashboardMockup() {
-  return (
-    <div className="w-full h-full rounded-xl border border-border bg-[var(--surface)] overflow-hidden">
-      <div className="p-5 flex flex-col gap-3">
-        {/* School header */}
-        <div className="text-center border-b border-border pb-3">
-          <div className="text-[12px] font-semibold text-[var(--text-primary)]">St. Jude Academy</div>
-          <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5">CBC Progress Report Card</div>
-        </div>
-        {/* Student info */}
-        <div className="grid grid-cols-2 gap-2 text-[10px]">
-          <div><span className="text-[var(--text-tertiary)]">Name </span><span className="text-[var(--text-primary)] font-medium">Amina Wanjiku</span></div>
-          <div><span className="text-[var(--text-tertiary)]">Grade </span><span className="text-[var(--text-primary)] font-medium">Grade 5</span></div>
-          <div><span className="text-[var(--text-tertiary)]">Term </span><span className="text-[var(--text-primary)] font-medium">Term 2 · 2026</span></div>
-          <div><span className="text-[var(--text-tertiary)]">Adm No </span><span className="text-[var(--text-primary)] font-medium font-mono">SJ/2024/032</span></div>
-        </div>
-        {/* Subjects */}
-        <div>
-          <div className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2 font-medium">Subjects</div>
-          <div className="space-y-1.5">
-            {[
-              { subject: "Mathematics", rubric: "EE1", color: "var(--rubric-ee)" },
-              { subject: "English", rubric: "ME1", color: "var(--rubric-me)" },
-              { subject: "Kiswahili", rubric: "EE2", color: "var(--rubric-ee)" },
-              { subject: "Science & Technology", rubric: "ME2", color: "var(--rubric-me)" },
-              { subject: "Social Studies", rubric: "AE1", color: "var(--rubric-ae)" },
-              { subject: "Creative Arts", rubric: "ME1", color: "var(--rubric-me)" },
-              { subject: "Physical & Health Ed.", rubric: "EE2", color: "var(--rubric-ee)" },
-            ].map((s) => (
-              <div key={s.subject} className="flex items-center justify-between rounded-md border border-border px-2.5 py-1.5">
-                <span className="text-[10px] text-[var(--text-secondary)]">{s.subject}</span>
-                <span
-                  className="text-[9px] font-medium px-1.5 py-0.5 rounded border"
-                  style={{ color: s.color, borderColor: s.color, backgroundColor: `color-mix(in srgb, ${s.color} 10%, transparent)` }}
-                >
-                  {s.rubric}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Competencies */}
-        <div>
-          <div className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2 font-medium">Core Competencies</div>
-          <div className="grid grid-cols-2 gap-1.5">
-            {[
-              { name: "Communication", rubric: "ME1", color: "var(--rubric-me)" },
-              { name: "Critical Thinking", rubric: "EE2", color: "var(--rubric-ee)" },
-              { name: "Creativity", rubric: "ME2", color: "var(--rubric-me)" },
-              { name: "Citizenship", rubric: "AE1", color: "var(--rubric-ae)" },
-              { name: "Self-Confidence", rubric: "EE1", color: "var(--rubric-ee)" },
-              { name: "Collaboration", rubric: "ME1", color: "var(--rubric-me)" },
-            ].map((c) => (
-              <div key={c.name} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
-                <span className="text-[9px] text-[var(--text-secondary)]">{c.name}</span>
-                <span
-                  className="text-[9px] font-medium px-1.5 py-0.5 rounded border"
-                  style={{ color: c.color, borderColor: c.color, backgroundColor: `color-mix(in srgb, ${c.color} 10%, transparent)` }}
-                >
-                  {c.rubric}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Remarks */}
-        <div className="border-t border-border pt-3">
-          <div className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-medium">Teacher Remarks</div>
-          <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
-            Amina is a dedicated learner who shows strong performance in Mathematics and English. She actively participates in group discussions and demonstrates excellent creative thinking skills.
-          </div>
-        </div>
-        {/* Head teacher */}
-        <div className="flex items-end justify-between border-t border-border pt-3">
-          <div>
-            <div className="text-[9px] text-[var(--text-tertiary)]">Head Teacher</div>
-            <div className="text-[10px] text-[var(--text-primary)] font-medium">Mr. James Ochieng</div>
-          </div>
-          <div className="text-right">
-            <div className="text-[9px] text-[var(--text-tertiary)]">Signature</div>
-            <div className="text-[10px] text-[var(--text-primary)] font-medium italic">J. Ochieng</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
