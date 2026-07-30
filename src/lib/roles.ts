@@ -125,12 +125,20 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
     items.push({ label: "Notifications", href: "/dashboard/notifications", icon: "Notifications" });
   }
 
+  if (canAccessModule(role, "notifications")) {
+    items.push({ label: "Announcements", href: "/dashboard/announcements", icon: "Announcements" });
+  }
+
   if (canAccessModule(role, "reports")) {
     items.push({ label: "Reports", href: "/dashboard/reports", icon: "Reports" });
   }
 
   if (isLeadership(role)) {
     items.push({ label: "Analytics", href: "/dashboard/analytics", icon: "Analytics" });
+  }
+
+  if (isLeadership(role) || canAccessModule(role, "library")) {
+    items.push({ label: "AI Tutor Logs", href: "/dashboard/mwalimu-logs", icon: "AI Tutor Logs" });
   }
 
   if (isLeadership(role)) {

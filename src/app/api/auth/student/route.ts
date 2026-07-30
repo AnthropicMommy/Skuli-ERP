@@ -40,6 +40,7 @@ export async function POST(req: Request) {
     admissionNo: student.admissionNo,
     name: student.name,
     grade: student.grade,
+    classId: student.classId || undefined,
   });
 
   return NextResponse.json({ token, studentId: student.id, name: student.name });

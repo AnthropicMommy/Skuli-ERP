@@ -9,6 +9,7 @@ export interface StudentSession {
   admissionNo: string;
   name: string;
   grade: string;
+  classId?: string;
 }
 
 export interface ParentSession {

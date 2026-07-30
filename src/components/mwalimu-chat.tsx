@@ -13,11 +13,24 @@ export function MwalimuChat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [subject, setSubject] = useState("");
+  const [classId, setClassId] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Try to get classId from student session cookie
+  useEffect(() => {
+    try {
+      const cookie = document.cookie.split("; ").find((c) => c.startsWith("skuli_token="));
+      if (cookie) {
+        const token = cookie.split("=")[1];
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        if (payload.classId) setClassId(payload.classId);
+      }
+    } catch {}
+  }, []);
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +50,7 @@ export function MwalimuChat() {
         body: JSON.stringify({
           message: userMsg,
           subject: subject || undefined,
+          classId: classId || undefined,
           conversationHistory: messages.map((m) => ({ role: m.role, content: m.content })),
         }),
       });

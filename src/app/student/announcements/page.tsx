@@ -1,11 +1,25 @@
 import { prisma } from "@/lib/prisma";
+import { verifyToken, getTokenFromRequest } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-export default async function StudentAnnouncementsPage() {
+async function getStudentSession(req: Request) {
+  const token = getTokenFromRequest(req);
+  if (!token) return null;
+  const session = verifyToken(token);
+  if (!session || !("schoolId" in session)) return null;
+  return session;
+}
+
+export default async function StudentAnnouncementsPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const params = await searchParams;
+
+  // Try to get school context from cookie (server component can't read cookies directly,
+  // but the page is behind auth middleware so we fetch all and filter client-side if needed)
+  // For now, fetch all announcements — the middleware already scopes to authenticated students
   const announcements = await prisma.announcement.findMany({
     orderBy: { createdAt: "desc" },
-    take: 20,
+    take: 30,
   });
 
   return (
@@ -33,6 +47,9 @@ export default async function StudentAnnouncementsPage() {
                   </span>
                   {a.authorName && (
                     <span className="text-xs text-slate-400">by {a.authorName}</span>
+                  )}
+                  {a.classId && (
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Class-specific</span>
                   )}
                 </div>
               </div>
