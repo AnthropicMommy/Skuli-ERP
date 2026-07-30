@@ -86,13 +86,13 @@ export function StudentsTable({ students, schoolId }: { students: Student[]; sch
                 <TableRow key={s.id}>
                   <TableCell className="font-mono text-sm">{s.admissionNo}</TableCell>
                   <TableCell className="font-medium">
-                    <a href={`/report/${s.id}`} className="text-indigo-600 hover:underline">{s.name}</a>
+                    <a href={`/report/${s.id}`} target="_blank" className="text-primary hover:underline">{s.name}</a>
                   </TableCell>
                   <TableCell>{s.grade}</TableCell>
                   <TableCell>{s.stream || "-"}</TableCell>
                   <TableCell>{s.gender || "-"}</TableCell>
                   <TableCell>
-                    <a href={`/report/${s.id}`} className="text-xs text-indigo-600 hover:text-indigo-700">View Report →</a>
+                    <a href={`/report/${s.id}`} target="_blank" className="inline-flex items-center justify-center h-7 px-3 rounded-md border border-border text-xs font-medium text-primary hover:bg-[var(--surface-hover)] transition-all">View</a>
                   </TableCell>
                 </TableRow>
               ))

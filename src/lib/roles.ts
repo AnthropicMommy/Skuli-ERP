@@ -35,7 +35,7 @@ const MODULE_ACCESS: Record<string, SchoolRole[]> = {
   assignments: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER"],
   library: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "LIBRARIAN"],
   notifications: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "SECRETARY"],
-  reports: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "HOD"],
+  reports: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "HOD", "CLASS_TEACHER", "TEACHER", "SENIOR_TEACHER"],
   dashboard: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER", "STUDENT", "PARENT", "BOARD_MEMBER"],
 };
 
@@ -129,7 +129,7 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
     items.push({ label: "Announcements", href: "/dashboard/announcements", icon: "Announcements" });
   }
 
-  if (canAccessModule(role, "reports")) {
+  if (canAccessModule(role, "exams")) {
     items.push({ label: "Reports", href: "/dashboard/reports", icon: "Reports" });
   }
 

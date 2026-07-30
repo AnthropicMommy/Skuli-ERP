@@ -30,22 +30,23 @@ const NAV_ITEMS = [
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Login page: no layout wrapper
   if (pathname === "/portal/login") {
     return <>{children}</>;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div className="min-h-screen bg-[var(--background)]">
+      <nav className="bg-[var(--sidebar)] border-b border-border sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
-            <Link href="/portal" className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
+            <Link href="/portal" className="flex items-center gap-2.5">
+              <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                <rect x="1" y="1" width="26" height="26" rx="7" stroke="currentColor" strokeWidth="1.5" className="text-primary" opacity="0.5" />
+                <path d="M9 18V12.5L14 9L19 12.5V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
+                <path d="M12 18V14.5H16V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
               </svg>
-              <span className="font-bold text-slate-900">Skuli</span>
-              <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-medium">Parent Portal</span>
+              <span className="text-[15px] font-semibold tracking-[-0.03em] text-[var(--text-primary)]">Skuli</span>
+              <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] px-2 py-0.5 rounded-full border border-border bg-[var(--surface)]">Parent Portal</span>
             </Link>
             <div className="flex items-center gap-1">
               {NAV_ITEMS.map((item) => (
@@ -55,8 +56,8 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                     pathname === item.href
-                      ? "bg-slate-50 text-slate-700"
-                      : "text-slate-600 hover:bg-slate-50"
+                      ? "bg-[var(--sidebar-accent)] text-[var(--text-primary)]"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--text-primary)]"
                   )}
                 >
                   {item.icon}

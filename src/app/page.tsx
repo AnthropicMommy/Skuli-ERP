@@ -1,225 +1,471 @@
+"use client";
+
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
+import { ScrollReveal } from "@/components/scroll-reveal";
+import { useParallaxTilt } from "@/hooks/use-parallax-tilt";
+import { useScrollParallax } from "@/hooks/use-scroll-parallax";
 
 export default function HomePage() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroTiltStyle = useParallaxTilt(heroRef, { maxTilt: 8 });
+  const parallaxOffset = useScrollParallax(0.15);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="border-b border-black/5 bg-white/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2.5">
-              <svg className="w-6 h-6 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
-              </svg>
-              <span className="text-lg font-semibold tracking-tight">Skuli</span>
+    <div className="min-h-screen bg-[--background]">
+      {/* ─── Header ─── */}
+      <header className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled ? "bg-[var(--background)]/90 backdrop-blur-md border-border" : "bg-transparent border-transparent"}`}>
+        <div className="container flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-2.5">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+              <rect x="1" y="1" width="26" height="26" rx="7" stroke="currentColor" strokeWidth="1.5" className="text-primary" opacity="0.5" />
+              <path d="M9 18V12.5L14 9L19 12.5V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
+              <path d="M12 18V14.5H16V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
+            </svg>
+            <span className="text-[15px] font-semibold tracking-[-0.03em] text-[var(--text-primary)]">Skuli</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/login" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200">
+              Staff Login
             </Link>
-            <div className="flex items-center gap-2">
-              <Link href="/login" className="text-sm font-medium text-black/60 hover:text-black px-3 py-2 transition-colors">
-                Staff Login
-              </Link>
-              <Link href="/student-login" className="text-sm font-medium text-black/60 hover:text-black px-3 py-2 transition-colors">
-                Student Login
-              </Link>
-              <Link href="/portal/login" className="text-sm font-medium text-black/60 hover:text-black px-3 py-2 transition-colors">
-                Parent Login
-              </Link>
+            <Link href="/student-login" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200">
+              Student Login
+            </Link>
+            <Link href="/portal/login" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200">
+              Parent Login
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        {/* ─── Hero ─── */}
+        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+          {/* Background grid with parallax */}
+          <div
+            className="absolute inset-0 grid-bg opacity-60"
+            style={{ transform: `translateY(${parallaxOffset}px)` }}
+          />
+          {/* Radial accent glow */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(125, 211, 252, 0.06), transparent)",
+            }}
+          />
+
+          <div className="container relative z-10">
+            <div className="grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
+              {/* Left: text */}
+              <ScrollReveal>
+                <div className="eyebrow mb-6">
+                  Built for CBC · Free onboarding
+                </div>
+                <h1
+                  className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-[-0.02em] leading-[1.05] text-[var(--text-primary)]"
+                  style={{ fontFamily: "Geist, Inter, sans-serif" }}
+                >
+                  Making Schools Great Again
+                </h1>
+                <p className="mt-6 text-base lg:text-lg text-[var(--text-secondary)] leading-relaxed max-w-xl">
+                  Assignments, learning resources, report cards, and parent communication — in one place. Built around the student. Free onboarding.
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="https://cal.com/peter-makau-scales"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center h-11 px-6 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all hover:scale-[0.98] active:scale-[0.97] accent-glow"
+                  >
+                    Book a free demo
+                  </a>
+                  <a
+                    href="#features"
+                    className="inline-flex items-center justify-center h-11 px-6 rounded-lg border border-[var(--border-strong)] text-[var(--text-primary)] text-sm font-medium hover:bg-[var(--surface-hover)] transition-all"
+                  >
+                    Explore features
+                  </a>
+                </div>
+              </ScrollReveal>
+
+              {/* Right: 3D tilted mockup */}
+              <ScrollReveal className="hidden lg:block" delay={120}>
+                <div ref={heroRef} style={heroTiltStyle}>
+                  <div className="relative">
+                    <div
+                      className="absolute -inset-4 rounded-2xl"
+                      style={{
+                        background: "radial-gradient(ellipse at center, rgba(125, 211, 252, 0.08), transparent 70%)",
+                      }}
+                    />
+                    <div className="relative aspect-[4/3] w-full max-w-lg ml-auto">
+                      <DashboardMockup />
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Mobile: static mockup */}
+              <ScrollReveal className="lg:hidden" delay={120}>
+                <div className="aspect-[4/3] w-full max-w-sm mx-auto">
+                  <DashboardMockup />
+                </div>
+              </ScrollReveal>
             </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero */}
-      <section className="relative">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-20 pb-24 md:pt-28 md:pb-32">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl font-bold text-black tracking-tight leading-[1.05]">
-              The operating system for Kenyan schools
-            </h1>
-            <p className="text-lg text-black/50 mt-6 max-w-xl leading-relaxed">
-              Attendance, grades, timetables, and parent communication — in one place.
-              Built for CBC. Free onboarding.
-            </p>
-          </div>
-        </div>
-      </section>
+          {/* Bottom fade */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+        </section>
 
-      {/* Who are you? */}
-      <section className="py-24 bg-white border-t border-black/5">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-black tracking-tight">
-              Who are you?
-            </h2>
-            <p className="text-black/50 mt-3 text-lg">
-              Choose how you want to use Skuli.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Student */}
-            <Link href="/student-login" className="group block bg-white border border-black/10 rounded-2xl p-6 hover:border-cyan-300 hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-black">Student</h3>
-              <p className="text-sm text-black/50 mt-2 leading-relaxed">
-                View assignments, chat with classmates, get AI study help, and track your progress.
-              </p>
-              <div className="mt-4 text-sm font-medium text-cyan-600 group-hover:text-cyan-700">
-                Log in as Student →
-              </div>
-            </Link>
+        {/* ─── Role Picker ─── */}
+        <section id="roles" className="py-24 lg:py-32 relative">
+          <div className="container">
+            <ScrollReveal>
+              <div className="eyebrow mb-4">Who are you?</div>
+              <h2
+                className="text-2xl sm:text-3xl lg:text-4xl font-medium tracking-[-0.02em] text-[var(--text-primary)]"
+                style={{ fontFamily: "Geist, Inter, sans-serif" }}
+              >
+                Learning that puts students first.
+              </h2>
+            </ScrollReveal>
 
-            {/* Parent */}
-            <Link href="/portal/login" className="group block bg-white border border-black/10 rounded-2xl p-6 hover:border-cyan-300 hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-black">Parent</h3>
-              <p className="text-sm text-black/50 mt-2 leading-relaxed">
-                Track attendance, view report cards, message teachers, and stay involved.
-              </p>
-              <div className="mt-4 text-sm font-medium text-cyan-600 group-hover:text-cyan-700">
-                Log in as Parent →
-              </div>
-            </Link>
-
-            {/* Teacher */}
-            <Link href="/login" className="group block bg-white border border-black/10 rounded-2xl p-6 hover:border-cyan-300 hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-black">Teacher</h3>
-              <p className="text-sm text-black/50 mt-2 leading-relaxed">
-                Manage classes, mark attendance, enter grades, and create assignments.
-              </p>
-              <div className="mt-4 text-sm font-medium text-cyan-600 group-hover:text-cyan-700">
-                Log in as Teacher →
-              </div>
-            </Link>
-
-            {/* Principal */}
-            <Link href="https://cal.com/peter-makau-scales" target="_blank" rel="noopener noreferrer" className="group block bg-black text-white rounded-2xl p-6 hover:bg-black/90 transition-all">
-              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold">Principal</h3>
-              <p className="text-sm text-white/60 mt-2 leading-relaxed">
-                Set up your school on Skuli. We handle onboarding and training — it&apos;s free.
-              </p>
-              <div className="mt-4 text-sm font-medium text-white/80 group-hover:text-white flex items-center gap-1">
-                Book a free demo
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                </svg>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="max-w-2xl mb-16">
-            <h2 className="text-3xl font-bold text-black tracking-tight">
-              Everything you need to run a school.
-            </h2>
-            <p className="text-black/50 mt-3 text-lg">
-              One platform. Every role. From enrollment to report cards.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/5 rounded-2xl overflow-hidden">
-            {[
-              {
-                title: "Student Management",
-                desc: "Enrollment, profiles, and academic history for every student.",
-                icon: (
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                  </svg>
-                ),
-              },
-              {
-                title: "CBC Grading",
-                desc: "8-point rubric, term exams, and automated report cards.",
-                icon: (
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                  </svg>
-                ),
-              },
-              {
-                title: "Mwalimu AI",
-                desc: "AI study assistant for students — revision help, quizzes, and homework support.",
-                icon: (
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-                  </svg>
-                ),
-              },
-              {
-                title: "Class Chat",
-                desc: "Real-time messaging between students, teachers, and parents.",
-                icon: (
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                  </svg>
-                ),
-              },
-              {
-                title: "Attendance",
-                desc: "Daily tracking, reports, and real-time parent notifications.",
-                icon: (
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                ),
-              },
-              {
-                title: "Timetable",
-                desc: "Build, manage, and share class schedules in minutes.",
-                icon: (
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                  </svg>
-                ),
-              },
-            ].map((feature) => (
-              <div key={feature.title} className="bg-white p-6">
-                <div className="text-black/40 mb-3">{feature.icon}</div>
-                <h3 className="text-sm font-semibold text-black">{feature.title}</h3>
-                <p className="text-sm text-black/40 mt-1.5 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-black/5 bg-white">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
-              </svg>
-              <span className="text-sm font-semibold">Skuli</span>
+            <div className="grid sm:grid-cols-2 gap-4 mt-12 lg:mt-16">
+              {[
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                  ),
+                  title: "Student",
+                  description: "View assignments, chat with classmates, get AI study help, and track your progress.",
+                  cta: "Log in as Student",
+                  href: "/student-login",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  ),
+                  title: "Parent",
+                  description: "Track attendance, view report cards, message teachers, and stay involved.",
+                  cta: "Log in as Parent",
+                  href: "/portal/login",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
+                    </svg>
+                  ),
+                  title: "Teacher",
+                  description: "Manage classes, mark attendance, enter grades, and create assignments.",
+                  cta: "Log in as Teacher",
+                  href: "/login",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                    </svg>
+                  ),
+                  title: "Principal",
+                  description: "Set up your school on Skuli. We handle onboarding and training — it's free.",
+                  cta: "Book a free demo",
+                  href: "https://cal.com/peter-makau-scales",
+                  accent: true,
+                },
+              ].map((role, i) => (
+                <ScrollReveal key={role.title} delay={60 * (i + 1)}>
+                  <Link
+                    href={role.href}
+                    target={role.accent ? "_blank" : undefined}
+                    rel={role.accent ? "noopener noreferrer" : undefined}
+                    className="group block rounded-xl border border-border bg-[var(--surface)] p-6 transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-hover)]"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-lg border border-border bg-background">
+                        <span className={role.accent ? "text-primary" : "text-[var(--text-secondary)]"}>
+                          {role.icon}
+                        </span>
+                      </div>
+                      {role.accent && (
+                        <span className="text-[10px] uppercase tracking-wider text-primary font-medium px-2 py-0.5 rounded-full border border-primary/20 bg-primary/10">
+                          Free
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-base font-medium text-[var(--text-primary)] mb-2">
+                      {role.title}
+                    </h3>
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
+                      {role.description}
+                    </p>
+                    <div
+                      className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                        role.accent
+                          ? "text-primary"
+                          : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+                      }`}
+                    >
+                      {role.cta}
+                    </div>
+                  </Link>
+                </ScrollReveal>
+              ))}
             </div>
-            <div className="flex items-center gap-6 text-xs text-black/30">
-              <a href="mailto:info@skuli.co.ke" className="hover:text-black transition-colors">info@skuli.co.ke</a>
-              <span>&copy; {new Date().getFullYear()} Skuli</span>
+          </div>
+        </section>
+
+        {/* ─── Features ─── */}
+        <section id="features" className="py-24 lg:py-32 relative border-t border-border">
+          <div className="container">
+            <ScrollReveal>
+              <div className="eyebrow mb-4">Features</div>
+              <h2
+                className="text-2xl sm:text-3xl lg:text-4xl font-medium tracking-[-0.02em] text-[var(--text-primary)] max-w-2xl"
+                style={{ fontFamily: "Geist, Inter, sans-serif" }}
+              >
+                Everything you need to run a school.
+              </h2>
+            </ScrollReveal>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border rounded-xl overflow-hidden border border-border mt-12 lg:mt-16">
+              {[
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  ),
+                  title: "Student Management",
+                  description: "Enrollment, profiles, and academic history for every student.",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                  ),
+                  title: "CBC Grading",
+                  description: "8-point rubric, term exams, and automated report cards.",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                    </svg>
+                  ),
+                  title: "Mwalimu AI",
+                  description: "AI study assistant for students — revision help, quizzes, and homework support.",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                    </svg>
+                  ),
+                  title: "Class Chat",
+                  description: "Real-time messaging between students, teachers, and parents.",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  ),
+                  title: "Attendance",
+                  description: "Daily tracking, reports, and real-time parent notifications.",
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                  ),
+                  title: "Timetable",
+                  description: "Build, manage, and share class schedules in minutes.",
+                },
+              ].map((feature, i) => (
+                <ScrollReveal key={feature.title} delay={60 * ((i % 3) + 1)}>
+                  <div className="bg-[var(--surface)] p-6 lg:p-8 transition-colors hover:bg-[var(--surface-hover)]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-lg border border-border bg-background mb-4">
+                      <span className="text-[var(--text-secondary)]">{feature.icon}</span>
+                    </div>
+                    <h3 className="text-base font-medium text-[var(--text-primary)] mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── CTA ─── */}
+        <section className="py-24 lg:py-32 relative overflow-hidden border-t border-border">
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(125, 211, 252, 0.04), transparent)",
+            }}
+          />
+          <div className="container relative z-10">
+            <ScrollReveal>
+              <div className="max-w-2xl mx-auto text-center">
+                <h2
+                  className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.02em] text-[var(--text-primary)] leading-[1.1]"
+                  style={{ fontFamily: "Geist, Inter, sans-serif" }}
+                >
+                  Ready to set up your school?
+                </h2>
+                <p className="mt-4 text-base text-[var(--text-secondary)] leading-relaxed">
+                  We handle onboarding and training. It&apos;s free.
+                </p>
+                <div className="mt-8">
+                  <a
+                    href="https://cal.com/peter-makau-scales"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center h-11 px-6 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all hover:scale-[0.98] active:scale-[0.97] accent-glow"
+                  >
+                    Book a free demo
+                  </a>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+      </main>
+
+      {/* ─── Footer ─── */}
+      <footer className="border-t border-border py-12">
+        <div className="container">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col items-center md:items-start gap-3">
+              <Link href="/" className="flex items-center gap-2.5">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                  <rect x="1" y="1" width="26" height="26" rx="7" stroke="currentColor" strokeWidth="1.5" className="text-primary" opacity="0.5" />
+                  <path d="M9 18V12.5L14 9L19 12.5V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
+                  <path d="M12 18V14.5H16V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
+                </svg>
+                <span className="text-[15px] font-semibold tracking-[-0.03em] text-[var(--text-primary)]">Skuli</span>
+              </Link>
+              <a
+                href="mailto:info@skuli.co.ke"
+                className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                info@skuli.co.ke
+              </a>
+            </div>
+            <div className="text-sm text-[var(--text-tertiary)]">
+              &copy; 2026 Skuli
             </div>
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/* ─── Report Card Mockup (inline) ─── */
+function DashboardMockup() {
+  return (
+    <div className="w-full h-full rounded-xl border border-border bg-[var(--surface)] overflow-hidden">
+      <div className="p-5 flex flex-col gap-3">
+        {/* School header */}
+        <div className="text-center border-b border-border pb-3">
+          <div className="text-[12px] font-semibold text-[var(--text-primary)]">St. Jude Academy</div>
+          <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5">CBC Progress Report Card</div>
+        </div>
+        {/* Student info */}
+        <div className="grid grid-cols-2 gap-2 text-[10px]">
+          <div><span className="text-[var(--text-tertiary)]">Name </span><span className="text-[var(--text-primary)] font-medium">Amina Wanjiku</span></div>
+          <div><span className="text-[var(--text-tertiary)]">Grade </span><span className="text-[var(--text-primary)] font-medium">Grade 5</span></div>
+          <div><span className="text-[var(--text-tertiary)]">Term </span><span className="text-[var(--text-primary)] font-medium">Term 2 · 2026</span></div>
+          <div><span className="text-[var(--text-tertiary)]">Adm No </span><span className="text-[var(--text-primary)] font-medium font-mono">SJ/2024/032</span></div>
+        </div>
+        {/* Subjects */}
+        <div>
+          <div className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2 font-medium">Subjects</div>
+          <div className="space-y-1.5">
+            {[
+              { subject: "Mathematics", rubric: "EE1", color: "var(--rubric-ee)" },
+              { subject: "English", rubric: "ME1", color: "var(--rubric-me)" },
+              { subject: "Kiswahili", rubric: "EE2", color: "var(--rubric-ee)" },
+              { subject: "Science & Technology", rubric: "ME2", color: "var(--rubric-me)" },
+              { subject: "Social Studies", rubric: "AE1", color: "var(--rubric-ae)" },
+              { subject: "Creative Arts", rubric: "ME1", color: "var(--rubric-me)" },
+              { subject: "Physical & Health Ed.", rubric: "EE2", color: "var(--rubric-ee)" },
+            ].map((s) => (
+              <div key={s.subject} className="flex items-center justify-between rounded-md border border-border px-2.5 py-1.5">
+                <span className="text-[10px] text-[var(--text-secondary)]">{s.subject}</span>
+                <span
+                  className="text-[9px] font-medium px-1.5 py-0.5 rounded border"
+                  style={{ color: s.color, borderColor: s.color, backgroundColor: `color-mix(in srgb, ${s.color} 10%, transparent)` }}
+                >
+                  {s.rubric}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Competencies */}
+        <div>
+          <div className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2 font-medium">Core Competencies</div>
+          <div className="grid grid-cols-2 gap-1.5">
+            {[
+              { name: "Communication", rubric: "ME1", color: "var(--rubric-me)" },
+              { name: "Critical Thinking", rubric: "EE2", color: "var(--rubric-ee)" },
+              { name: "Creativity", rubric: "ME2", color: "var(--rubric-me)" },
+              { name: "Citizenship", rubric: "AE1", color: "var(--rubric-ae)" },
+              { name: "Self-Confidence", rubric: "EE1", color: "var(--rubric-ee)" },
+              { name: "Collaboration", rubric: "ME1", color: "var(--rubric-me)" },
+            ].map((c) => (
+              <div key={c.name} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
+                <span className="text-[9px] text-[var(--text-secondary)]">{c.name}</span>
+                <span
+                  className="text-[9px] font-medium px-1.5 py-0.5 rounded border"
+                  style={{ color: c.color, borderColor: c.color, backgroundColor: `color-mix(in srgb, ${c.color} 10%, transparent)` }}
+                >
+                  {c.rubric}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Remarks */}
+        <div className="border-t border-border pt-3">
+          <div className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-medium">Teacher Remarks</div>
+          <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
+            Amina is a dedicated learner who shows strong performance in Mathematics and English. She actively participates in group discussions and demonstrates excellent creative thinking skills.
+          </div>
+        </div>
+        {/* Head teacher */}
+        <div className="flex items-end justify-between border-t border-border pt-3">
+          <div>
+            <div className="text-[9px] text-[var(--text-tertiary)]">Head Teacher</div>
+            <div className="text-[10px] text-[var(--text-primary)] font-medium">Mr. James Ochieng</div>
+          </div>
+          <div className="text-right">
+            <div className="text-[9px] text-[var(--text-tertiary)]">Signature</div>
+            <div className="text-[10px] text-[var(--text-primary)] font-medium italic">J. Ochieng</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

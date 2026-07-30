@@ -1,133 +1,186 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+/**
+ * ReportCard — CBC report card display component.
+ *
+ * DROP-IN INSTRUCTIONS FOR OPENCODE:
+ * - Save this at: src/components/report-card.tsx
+ * - Reuse the EXISTING hook at src/hooks/use-parallax-tilt.ts — do not write new tilt math.
+ *   If the hook's exported name/signature differs from the import below, adjust the import
+ *   line only. Do not change how the hook itself calculates rotation.
+ * - Wire real data from GET /api/cbc?studentId=... — replace the `ReportCardProps` shape
+ *   below with whatever the actual API returns if field names differ, but keep the
+ *   component structure and class names as-is.
+ * - This component takes an `interactive` prop: true = desktop teacher/parent dashboard
+ *   view (tilt enabled), false = public parent link (/report/[studentId]) and ALL mobile
+ *   viewports (tilt disabled, flat static card). Tilt must never apply on touch devices.
+ */
 
-type School = { name: string; motto: string | null; logoUrl: string | null; address: string | null };
-type Student = { id: string; name: string; admissionNo: string; grade: string; stream: string | null; gender: string | null };
-type CbcResult = { id: string; subject: string; rubricLevel: string; term: string; year: number; strand: string | null };
-type Competency = { id: string; competency: string; score: string | null; term: string; year: number };
+import { useRef } from "react";
+import { useParallaxTilt } from "@/hooks/use-parallax-tilt"; // adjust path/name to match existing hook
 
-const RUBRIC_INFO: Record<string, { pts: number; desc: string; color: string }> = {
-  EE1: { pts: 8, desc: "Exceeding Expectations", color: "bg-green-100 text-green-800" },
-  EE2: { pts: 7, desc: "Exceeding Expectations", color: "bg-green-50 text-green-700" },
-  ME1: { pts: 6, desc: "Meeting Expectations", color: "bg-blue-100 text-blue-800" },
-  ME2: { pts: 5, desc: "Meeting Expectations", color: "bg-blue-50 text-blue-700" },
-  AE1: { pts: 4, desc: "Approaching Expectations", color: "bg-amber-100 text-amber-800" },
-  AE2: { pts: 3, desc: "Approaching Expectations", color: "bg-amber-50 text-amber-700" },
-  BE1: { pts: 2, desc: "Below Expectations", color: "bg-red-100 text-red-800" },
-  BE2: { pts: 1, desc: "Below Expectations", color: "bg-red-50 text-red-700" },
+type RubricLevel = "EE1" | "EE2" | "ME1" | "ME2" | "AE1" | "AE2" | "BE1" | "BE2";
+
+interface SubjectResult {
+  subject: string;
+  rubric: RubricLevel;
+  teacherComment?: string;
+}
+
+interface CompetencyResult {
+  competency: string;
+  rubric: RubricLevel;
+}
+
+interface ReportCardProps {
+  schoolName: string;
+  studentName: string;
+  admissionNumber: string;
+  grade: string;
+  term: string;
+  year: string;
+  subjects: SubjectResult[];
+  competencies: CompetencyResult[];
+  classTeacherComment?: string;
+  interactive?: boolean; // default false — caller must explicitly opt into tilt
+}
+
+const RUBRIC_COLOR: Record<RubricLevel, string> = {
+  EE1: "var(--rubric-ee)",
+  EE2: "var(--rubric-ee)",
+  ME1: "var(--rubric-me)",
+  ME2: "var(--rubric-me)",
+  AE1: "var(--rubric-ae)",
+  AE2: "var(--rubric-ae)",
+  BE1: "var(--rubric-be)",
+  BE2: "var(--rubric-be)",
 };
 
-const COMPETENCY_LABELS: Record<string, string> = {
-  COMMUNICATION: "Communication & Collaboration",
-  CRITICAL_THINKING: "Critical Thinking & Problem Solving",
-  CREATIVITY: "Creativity & Imagination",
-  CITIZENSHIP: "Citizenship",
-  DIGITAL_LITERACY: "Digital Literacy",
-  LEARNING_TO_LEARN: "Learning to Learn",
-  SELF_EFFICACY: "Self-Efficacy",
+const RUBRIC_LABEL: Record<RubricLevel, string> = {
+  EE1: "Exceeding Expectation",
+  EE2: "Exceeding Expectation",
+  ME1: "Meeting Expectation",
+  ME2: "Meeting Expectation",
+  AE1: "Approaching Expectation",
+  AE2: "Approaching Expectation",
+  BE1: "Below Expectation",
+  BE2: "Below Expectation",
 };
 
-const TERM_LABELS: Record<string, string> = { TERM_1: "Term 1", TERM_2: "Term 2", TERM_3: "Term 3" };
+function RubricBadge({ level }: { level: RubricLevel }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium"
+      style={{
+        borderColor: RUBRIC_COLOR[level],
+        color: RUBRIC_COLOR[level],
+        backgroundColor: `color-mix(in srgb, ${RUBRIC_COLOR[level]} 12%, transparent)`,
+      }}
+      title={RUBRIC_LABEL[level]}
+    >
+      {level}
+    </span>
+  );
+}
 
 export function ReportCard({
-  student, school, results, competencies,
-}: {
-  student: Student; school: School; results: CbcResult[]; competencies: Competency[];
-}) {
-  const latestYear = results.length > 0 ? results[0].year : new Date().getFullYear();
-  const latestTerm = results.length > 0 ? results[0].term : "TERM_1";
-  const termResults = results.filter((r) => r.year === latestYear && r.term === latestTerm);
-  const termCompetencies = competencies.filter((c) => c.year === latestYear && c.term === latestTerm);
+  schoolName,
+  studentName,
+  admissionNumber,
+  grade,
+  term,
+  year,
+  subjects,
+  competencies,
+  classTeacherComment,
+  interactive = false,
+}: ReportCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const totalPoints = termResults.reduce((sum, r) => sum + (RUBRIC_INFO[r.rubricLevel]?.pts || 0), 0);
-  const avgPoints = termResults.length > 0 ? (totalPoints / termResults.length).toFixed(1) : "0";
+  // Tilt is ONLY wired up when interactive=true. On mobile / public parent view,
+  // interactive must be passed as false by the caller — do not detect viewport
+  // width inside this component; the parent decides.
+  const tiltStyle = interactive ? useParallaxTilt(cardRef, { maxTilt: 6 }) : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white p-8 text-center">
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-4xl">🏫</span>
-            </div>
-            <h1 className="text-2xl font-bold">{school.name}</h1>
-            {school.motto && <p className="text-indigo-200 text-sm mt-1 italic">&ldquo;{school.motto}&rdquo;</p>}
-            {school.address && <p className="text-indigo-100 text-sm mt-1">{school.address}</p>}
-            <p className="text-indigo-200 text-sm mt-3 font-medium">CBC Progress Report Card</p>
-          </div>
-
-          {/* Student Info */}
-          <div className="p-6 border-b border-gray-200 bg-gray-50">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div><p className="text-gray-500">Student Name</p><p className="font-semibold">{student.name}</p></div>
-              <div><p className="text-gray-500">Admission No.</p><p className="font-semibold font-mono">{student.admissionNo}</p></div>
-              <div><p className="text-gray-500">Grade</p><p className="font-semibold">{student.grade}{student.stream ? ` - ${student.stream}` : ""}</p></div>
-              <div><p className="text-gray-500">Term / Year</p><p className="font-semibold">{TERM_LABELS[latestTerm]} {latestYear}</p></div>
-            </div>
-          </div>
-
-          {/* Subject Results */}
-          <div className="p-6">
-            <h2 className="text-lg font-semibold mb-4">CBC Assessment Results</h2>
-            {termResults.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No results available for this term.</p>
-            ) : (
-              <div className="space-y-2">
-                {termResults.map((r) => {
-                  const info = RUBRIC_INFO[r.rubricLevel];
-                  return (
-                    <div key={r.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100">
-                      <div>
-                        <span className="font-medium">{r.subject}</span>
-                        {r.strand && <span className="text-xs text-gray-400 ml-2">({r.strand})</span>}
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge className={info?.color || "bg-gray-100"}>{r.rubricLevel}</Badge>
-                        <span className="text-xs text-gray-500 w-32">{info?.desc} ({info?.pts} pts)</span>
-                      </div>
-                    </div>
-                  );
-                })}
-                <div className="flex items-center justify-between p-3 rounded-lg bg-indigo-50 border border-indigo-100 mt-2">
-                  <span className="font-semibold text-indigo-900">Average Points</span>
-                  <span className="text-lg font-bold text-indigo-700">{avgPoints} / 8</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Core Competencies */}
-          <div className="p-6 border-t border-gray-200">
-            <h2 className="text-lg font-semibold mb-4">Core Competencies</h2>
-            {termCompetencies.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">No competency data available.</p>
-            ) : (
-              <div className="grid grid-cols-1 gap-2">
-                {termCompetencies.map((c) => {
-                  const info = c.score ? RUBRIC_INFO[c.score] : null;
-                  return (
-                    <div key={c.id} className="flex items-center justify-between p-2 rounded border border-gray-100">
-                      <span className="text-sm">{COMPETENCY_LABELS[c.competency] || c.competency}</span>
-                      {info && <Badge className={info.color}>{c.score}</Badge>}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="p-6 border-t border-gray-200 bg-gray-50">
-            <div className="flex justify-between items-center">
-              <p className="text-xs text-gray-400">Powered by Skuli — Smart ERP for Kenyan CBC Schools</p>
-              <Button variant="outline" size="sm" onClick={() => window.print()}>🖨️ Print</Button>
-            </div>
-          </div>
+    <div
+      ref={cardRef}
+      style={tiltStyle}
+      className="mx-auto w-full max-w-2xl rounded-xl border p-6 sm:p-8"
+      // Tilt transform applies ONLY to this outer wrapper. Every element below
+      // is flat, static content — never attach transforms to children.
+      // Uses existing design tokens — do not hardcode colors here.
+      // border: var(--border), background: var(--surface)
+    >
+      <header className="mb-6 flex items-start justify-between border-b pb-4"
+        style={{ borderColor: "var(--border)" }}>
+        <div>
+          <p className="text-xs uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
+            {schoolName}
+          </p>
+          <h2 className="mt-1 text-xl font-medium" style={{ color: "var(--text-primary)" }}>
+            {studentName}
+          </h2>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            Adm. No. {admissionNumber} · Grade {grade}
+          </p>
         </div>
-      </div>
+        <div className="text-right text-sm" style={{ color: "var(--text-secondary)" }}>
+          <p>{term}</p>
+          <p>{year}</p>
+        </div>
+      </header>
+
+      <section className="mb-6">
+        <h3 className="mb-3 text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+          Subjects
+        </h3>
+        <div className="space-y-2">
+          {subjects.map((s) => (
+            <div
+              key={s.subject}
+              className="flex items-center justify-between rounded-lg border px-3 py-2"
+              style={{ borderColor: "var(--border)" }}
+            >
+              <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                {s.subject}
+              </span>
+              <RubricBadge level={s.rubric} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-6">
+        <h3 className="mb-3 text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+          Core Competencies
+        </h3>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {competencies.map((c) => (
+            <div
+              key={c.competency}
+              className="flex items-center justify-between rounded-lg border px-3 py-2"
+              style={{ borderColor: "var(--border)" }}
+            >
+              <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                {c.competency}
+              </span>
+              <RubricBadge level={c.rubric} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {classTeacherComment ? (
+        <section className="rounded-lg border p-3" style={{ borderColor: "var(--border)" }}>
+          <p className="mb-1 text-xs uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
+            Class Teacher&apos;s Comment
+          </p>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            {classTeacherComment}
+          </p>
+        </section>
+      ) : null}
     </div>
   );
 }

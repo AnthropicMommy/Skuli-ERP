@@ -151,7 +151,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-slate-500">Notifications</h3>
-            <a href="/dashboard/notifications" className="text-xs text-slate-400 hover:text-slate-600">View All</a>
+            <a href="/dashboard/notifications" className="inline-flex items-center justify-center h-7 px-3 rounded-md border border-slate-200 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-all">View All</a>
           </div>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-bold text-slate-900">{unreadNotifications}</span>

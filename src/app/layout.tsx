@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Skuli - Smart ERP for Kenyan CBC Schools",
+  title: "Skuli — The Operating System for Kenyan Schools",
   description:
-    "Multi-tenant school management system for Kenyan CBC schools. Manage students, attendance, exams, and generate CBC report cards.",
+    "Attendance, grades, timetables, and parent communication — in one place. Built for CBC. Free onboarding.",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col">
         <ClerkProvider>{children}</ClerkProvider>
