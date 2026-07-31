@@ -514,6 +514,156 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       "Tools: saw, chisel, mallet, measuring tape, pencil. Steps: measure, mark, cut mortise, cut tenon, test fit, glue/screw. Safety: eye protection, secure wood, cut away from body.",
     ],
   },
+  "Kiswahili": {
+    mcq: [
+      ["Maneno yote yanayoanza na herufi 'M' ni...", "Miti", "Nyumba", "Simu", "Kitabu"],
+      ["Ung'alisha sentensi: 'Mtoto ainasoma kitabu'", "Mtoto anasoma kitabu", "Mtoto ainasoma kitabu", "Mtoto inasoma kitabu", "Mtoto anasomia kitabu"],
+      ["Dhana ya 'furaha' ni nini?", "Kuwa na raha", "Kuwa na huzuni", "Kuwa na hasira", "Kuwa na uchovu"],
+      ["Kiini cha sentensi hii: 'Walikuja shuleni asubuhi' ni...", "Walikuja", "Shuleni", "Asubuhi", "Wote"],
+      ["Taja aina ya maneno: 'Red' ni...", "Kiatu", "Kisema", "Kihisi", "Kiitikio"],
+      ["Jina la kawaida la 'Nairobi' ni...", "Jiji", "Mji", "Kijiji", "Mkoa"],
+      ["Tumia neno sahihi: 'Niliona ____ yako'", "Mwenzako", "Rafiki", "Mwenzi", "Mwenyewe"],
+      ["Gawanya: 24 ÷ 6 =", "4", "5", "3", "6"],
+      ["Taja wingi wa 'mtoto'...", "Watoto", "Mitoto", "Vitoto", "Matoto"],
+      ["Maana ya methali 'Haraka haraka haina baraka' ni...", "Subira ni ufalme", "Kazi ni furaha", "Mcheza mcheza hujikunja", "Mgeni njia"],
+    ],
+    short: [
+      "Andika sentensi tano kwa kutumia maneno ya mwongozo: 'mtoto', 'shule', 'soma'.",
+      "Taja aina tatu za maneno katika Kiswahili na toa mfano kwa kila moja.",
+      "Eleza tofauti kati ya nomino na vitenzi kwa misemo miwili.",
+    ],
+    shortAnswers: [
+      "Tano sentensi sahihi zinazotumia maneno yote matatu",
+      "Nomino (mtu, vitu), Vitenzi (kusoma, kula), Viwasilishi (na, kwa, ya)",
+      "Nomino = jina la mtu au kitu; Vitenzi = kitendo"
+    ],
+    long: [
+      "Andika insha fupi ya maneno 100 kuhusu 'Siku yangu shuleni'. Taja shughuli unazofanya kila siku.",
+    ],
+    longAnswers: [
+      "Insha iliyo na mada, maandishi sahihi, alama za ufinyu, na maneno ya kutosha."
+    ],
+  },
+  "Religious Education": {
+    mcq: [
+      ["Mtu wa kwanza aliyeuwa katika Biblia ni...", "Cain", "Abel", "Adam", "Seth"],
+      ["Dini kuu za Kenya ni...", "Uislamu na Ukristu", "Budha na Hindu", "Shinto na Tao", "Sikh na Jain"],
+      ["Neno 'Bwana' katika Biblia linamaanisha...", "Mungu", "Mtu", "Malaika", "Shetani"],
+      ["Siku ya Sabato inahusu...", "Kuabudu", "Kufanya kazi", "Kucheza", "Kulala"],
+      ["Njia nyembamba katika Injili inamaanisha...", "Kufuata Mungu", "Kufuata watu", "Kufuata mali", "Kufuata anasa"],
+      ["Mtume aliyefufuka baada ya kufa ni...", "Yusufu", "Daudi", "Sulaiman", "Ibrahimu"],
+      ["Siri kumi za Mungu ni...", "Misingi ya imani", "Kanuni za shule", "Sheria za nchi", "Desturi za jamii"],
+      ["Neno 'Injili' linamaanisha...", "Habari njema", "Habari mbaya", "Hadithi", "Uongozi"],
+      ["Mtu aliyetembea na Mungu katika Biblia ni...", "Enocki", "Nuhu", "Lutu", "Abrahamu"],
+      ["Kanisa ni...", "Kundi la waumini", "Jengo", "Shule", "Hospitali"],
+    ],
+    short: [
+      "Eleza umuhimu wa Kanuni Kumi za Mungu katika maisha ya kila siku.",
+      "Taja majina ya Mitume kumi na mwili wa Yesu.",
+      "Andika Hadithi fupi moja kutoka Biblia na uifanyie kazi.",
+    ],
+    shortAnswers: [
+      "Kanuni kumi ni mwongozo wa maisha: kumpenda Mungu, kumpenda jirani, n.k.",
+      "Petro, Paulo, Andreas, Yakobo, Yohane, Filipo, Bartolomu, Tomasi, Mateo, Simoni, Tadeo, Yakobo wa Alphaeus",
+      "Hadithi sahihi na ufunuo wa maana"
+    ],
+    long: [
+      "Eleza umuhimu wa kusali katika maisha ya Mkristu. Taja aina tatu za kusali na mfano kwa kila moja.",
+    ],
+    longAnswers: [
+      "Kusali ni mawasiliano na Mungu. Aina: shukrani, ombi, tambu. Mfano: kusali kabla ya kula, kusali asubuhi."
+    ],
+  },
+  "Home Science": {
+    mcq: [
+      ["Nyumba nzuri ina...", "Vyumba vya kutosha", "Vioo vingi", "Mapazia mengi", "Samani za gharama"],
+      ["Chakula chenye virutubishsi vingi ni...", "Mboga na matunda", "Soda", "Vitafunio", "Chips"],
+      ["Njia bora ya kuhifadhi chakula ni...", "Kufungia kwenye kiozi", "Kuachilia mezani", "Kuweka jua", "Kuweka kwenye maji"],
+      ["Nguo inayofaa kwa joto ni...", "Pamba", "Sweta", "Jasi", "Bezi"],
+      ["Usafi wa jikoni ni muhimu kwa...", "Kuzuia ugonjwa", "Kupendeza", "Kupunguza gharama", "Kuongeza chakula"],
+      ["Mavazi ya kufaa shuleni ni...", "Safi na nadhifu", "Rangi yoyote", "Ya gharama", "Mapya kila siku"],
+      ["Chakula kinachopaswa kuliwa asubuhi ni...", "Wali, mboga, protein", "Soda na vitafunio", "Kahawa peke yake", "Ice cream"],
+      ["Njia ya kusafisha nguo ni...", "Kufulia kwa sabuni", "Kuachilia chini", "Kuchoma", "Kutupa"],
+      ["Mlango wa nyumba unafaa kuwa...", "Usalama", "Rangi nzuri", "Kubwa", "Ndogo"],
+      ["Vitu muhimu kwenye jikoni ni...", "Jiko, meza, vifaa", "TV, sofa, samani", "Picha, mapazia", "Vioo, michezo"],
+    ],
+    short: [
+      "Orodhesha vyakula vitano vinavyopaswa kuliwa kila siku kwa afya njema.",
+      "Eleza hatua tatu za kusafisha jikoni baada ya kupika.",
+      "Taja aina tatu za mavazi na matumizi yake.",
+    ],
+    shortAnswers: [
+      "Wali, mboga, matunda, protini (nyama/mboga kavu), maziwa",
+      "Osha vifaa, futa meza, osha sakafu",
+      "Mavazi ya kila siku, mavazi ya sherehe, mavazi ya Michezo"
+    ],
+    long: [
+      "Eleza umuhimu wa usafi wa nyumba katika kuzuia magonjwa. Taja hatua tano za kuhakikisha nyumba ni safi.",
+    ],
+    longAnswers: [
+      "Usafi hubadilisha mazingira, huua vijidudu, huongeza afya. Hatua: osha sakafu, vifaa, tumia sabuni, pua mara kwa mara, tupa takataka."
+    ],
+  },
+  "Physical & Health Education": {
+    mcq: [
+      ["Mazoezi ya mwili yanafaa kwa...", "Kuimarisha afya", "Kupunguza uzito peke yake", "Kupendeza", "Kuonyesha nguvu"],
+      ["Mchezo wa kuendesha baiskeli unaimarisha...", "Miguu na moyo", "Mikono peke yake", "Kichwa", "Kutambaa"],
+      ["Chakula chenye protini nyingi ni...", "Nyama na mboga kavu", "Soda", "Vitafunio", "Maji"],
+      ["Vidonda vya mdomo vinaweza kuzuiwa na...", "Kunawa mdomo baada ya kula", "Kula suguri", "Kunywa soda", "Kula usiku"],
+      ["Mchezo wa kikapu unaimarisha...", "Mikono na macho", "Miguu peke yake", "Kichwa", "Kutambaa"],
+      ["Afya njema inahusu...", "Mwili, akili, na roho", "Mwili peke yake", "Akili peke yake", "Mali peke yake"],
+      ["Maji ni muhimu kwa mwili kwa sababu...", "Huuondoa uchungu", "Huongeza uzito", "Hupunguza afya", "Husababisha magonjwa"],
+      ["Mchezo wa kubeba beba unaimarisha...", "Mgongo na miguu", "Mikono peke yake", "Kichwa", "Macho"],
+      ["Lengo la mazoezi ni...", "Kuimarisha afya", "Kupunguza uzito peke yake", "Kupendeza", "Kuonyesha nguvu"],
+      ["Mchezaji mzuri anajali...", "Usalama na kanuni", "Kushinda peke yake", "Kuonyesha", "Kuchokoza"],
+    ],
+    short: [
+      "Taja faida tatu za mazoezi ya mwili kwa mtoto.",
+      "Eleza kanuni tano za usalama katika michezo.",
+      "Andika ratiba ya mazoezi ya mwili kwa wiki moja.",
+    ],
+    shortAnswers: [
+      "Kuimarisha afya, kupunguza magonjwa, kuboresha michezo",
+      "Kuvaliwa vizuri, kutumia vifaa sahihi, kufanya mazoezi ya kuwasha, kuepuka maeneo hatari, kusikiliza mwalimu",
+      "Ratiba inayoonyesha aina za mazoezi kwa siku tofauti"
+    ],
+    long: [
+      "Eleza umuhimu wa usafi binafsi katika afya ya mtoto. Taja hatua tano za usafi binafsi.",
+    ],
+    longAnswers: [
+      "Usafi huboresha afya, huongeza ujasiri, huondoa vijidudu. Hatua: kunawa mikono, kunawa mdomo, kusafisha mwili, kuvaa nguo safi, kusafisha nywele."
+    ],
+  },
+  "Creative Arts": {
+    mcq: [
+      ["Rangi ya bluu ni moja ya...", "Rangi za baridi", "Rangi za joto", "Rangi nyeupe", "Rangi nyeusi"],
+      ["Sanaa ya uchoraji inatumia...", "Brashi na rangi", "Jiwe na chuma", "Mti na mbao", "Chuma na shaba"],
+      ["Muziki wa taarab una asili ya...", "Afrika Mashariki", "Ulaya", "Marekani", "Asia"],
+      ["Michezo ya jadi inafanywa na...", "Watoto na watu wazima", "Watu wazima peke yake", "Watoto peke yake", "Wageni"],
+      ["Sanamu ya kielelezo inaweza kuwa ya...", "Mti, jiwe, chuma", "Maji peke yake", "Hewa peke yake", "Rangi peke yake"],
+      ["Ugumu wa sanaa ni...", "Kujieleza", "Kuchora", "Kupaka rangi", "Kuchagua rangi"],
+      ["Ngoma ya Kitikiti ina asili ya...", "Kenya", "Tanzania", "Uganda", "Rwanda"],
+      ["Sanaa ya upigaji picha inahusu...", "Kuchukua picha", "Kuchora", "Kupaka rangi", "Kusuka"],
+      ["Muziki wa benga una asili ya...", "Kenya", "Nigeria", "Ghana", "Afrika Kusini"],
+      ["Ufundishaji wa sanaa shuleni unaimarisha...", "Ujasiri na utambuzi", "Nafsi peke yake", "Mali peke yake", "Umasikini"],
+    ],
+    short: [
+      "Taja aina tatu za sanaa za kuonekana na mfano kwa kila moja.",
+      "Eleza umuhimu wa sanaa katika elimu ya mtoto.",
+      "Andika nyimbo moja ya taifa la Kenya na uieleze umuhimu wake.",
+    ],
+    shortAnswers: [
+      "Uchoraji (picha), Sanamu (vitu), Upigaji picha (picha halisi)",
+      "Kuimarisha ujasiri, ubunifu, na utambuzi wa rangi na mifumo",
+      "Nyimbo ya taifa na umuhimu wake katika umoja"
+    ],
+    long: [
+      "Eleza jinsi sanaa zinavyoweza kutumika kuboresha elimu ya mtoto shuleni. Taja mifano minne.",
+    ],
+    longAnswers: [
+      "Sanaa zinaboresha ubunifu, ujasiri, utambuzi, na uwezo wa kujieleza. Mifano: uchoraji, ngoma, muziki, sanamu."
+    ],
+  },
 };
 
 const PAPERS: { grade: number; subject: string; term: string; assessmentType: string }[] = [
@@ -534,6 +684,59 @@ const PAPERS: { grade: number; subject: string; term: string; assessmentType: st
   { grade: 10, subject: "Physics", term: "Term 1", assessmentType: "End-Term" },
   { grade: 10, subject: "Mathematics", term: "Term 2", assessmentType: "Mid-Term" },
   { grade: 12, subject: "Mathematics", term: "Term 3", assessmentType: "KCSE" },
+  // === 30 NEW PAPERS ===
+  // Grade 1 (Lower Primary)
+  { grade: 1, subject: "Kiswahili", term: "Term 2", assessmentType: "End-Term" },
+  { grade: 1, subject: "Religious Education", term: "Term 3", assessmentType: "End-Term" },
+  // Grade 2 (Lower Primary)
+  { grade: 2, subject: "English", term: "Term 1", assessmentType: "Opener" },
+  { grade: 2, subject: "Mathematics", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 2, subject: "Environmental Activities", term: "Term 3", assessmentType: "End-Term" },
+  { grade: 2, subject: "Kiswahili", term: "Term 1", assessmentType: "End-Term" },
+  // Grade 3 (Lower Primary)
+  { grade: 3, subject: "Kiswahili", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 3, subject: "Religious Education", term: "Term 1", assessmentType: "End-Term" },
+  // Grade 4 (Upper Primary)
+  { grade: 4, subject: "Kiswahili", term: "Term 3", assessmentType: "End-Term" },
+  { grade: 4, subject: "Science & Technology", term: "Term 1", assessmentType: "Opener" },
+  { grade: 4, subject: "Home Science", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 4, subject: "Religious Education", term: "Term 1", assessmentType: "End-Term" },
+  // Grade 5 (Upper Primary)
+  { grade: 5, subject: "English", term: "Term 1", assessmentType: "Opener" },
+  { grade: 5, subject: "Mathematics", term: "Term 2", assessmentType: "End-Term" },
+  { grade: 5, subject: "Science & Technology", term: "Term 3", assessmentType: "Mid-Term" },
+  { grade: 5, subject: "Social Studies", term: "Term 1", assessmentType: "End-Term" },
+  // Grade 6 (Upper Primary)
+  { grade: 6, subject: "Kiswahili", term: "Term 1", assessmentType: "Opener" },
+  { grade: 6, subject: "Social Studies", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 6, subject: "Home Science", term: "Term 3", assessmentType: "End-Term" },
+  // Grade 7 (Junior Secondary)
+  { grade: 7, subject: "Kiswahili", term: "Term 3", assessmentType: "End-Term" },
+  { grade: 7, subject: "Social Studies", term: "Term 1", assessmentType: "Opener" },
+  { grade: 7, subject: "Computer Studies", term: "Term 2", assessmentType: "Mid-Term" },
+  // Grade 8 (Junior Secondary)
+  { grade: 8, subject: "English", term: "Term 1", assessmentType: "End-Term" },
+  { grade: 8, subject: "Mathematics", term: "Term 2", assessmentType: "End-Term" },
+  { grade: 8, subject: "Integrated Science", term: "Term 3", assessmentType: "KJSEA" },
+  // Grade 9 (Junior Secondary)
+  { grade: 9, subject: "Kiswahili", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 9, subject: "Social Studies", term: "Term 1", assessmentType: "End-Term" },
+  // Grade 10 (Senior Secondary)
+  { grade: 10, subject: "Chemistry", term: "Term 3", assessmentType: "End-Term" },
+  { grade: 10, subject: "Biology", term: "Term 1", assessmentType: "Opener" },
+  { grade: 10, subject: "Business Studies", term: "Term 2", assessmentType: "Mid-Term" },
+  // Grade 11 (Senior Secondary)
+  { grade: 11, subject: "Mathematics", term: "Term 1", assessmentType: "End-Term" },
+  { grade: 11, subject: "Physics", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 11, subject: "Chemistry", term: "Term 3", assessmentType: "End-Term" },
+  { grade: 11, subject: "Biology", term: "Term 1", assessmentType: "Opener" },
+  // Grade 12 (Senior Secondary)
+  { grade: 12, subject: "Physics", term: "Term 1", assessmentType: "End-Term" },
+  { grade: 12, subject: "Chemistry", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 12, subject: "Biology", term: "Term 3", assessmentType: "KCSE" },
+  { grade: 12, subject: "Geography", term: "Term 1", assessmentType: "End-Term" },
+  { grade: 12, subject: "Business Studies", term: "Term 2", assessmentType: "Mid-Term" },
+  { grade: 12, subject: "History & Government", term: "Term 3", assessmentType: "KCSE" },
 ];
 
 function shuffleArray<T>(arr: T[]): T[] {
