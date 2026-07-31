@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_ITEMS = [
   {
@@ -64,6 +65,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
                   <span className="hidden sm:inline">{item.label}</span>
                 </Link>
               ))}
+              <ThemeToggle />
             </div>
           </div>
         </div>

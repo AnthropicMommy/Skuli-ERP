@@ -29,21 +29,11 @@ export default function StudentDashboardPage() {
         name: payload.name || "Student",
         grade: payload.grade || "?",
         isIndependent,
-        hasProfile: false,
+        hasProfile: true,
       });
 
-      // Check if independent student has completed onboarding
       if (isIndependent) {
-        fetch("/api/student-profile")
-          .then((res) => res.json())
-          .then((data) => {
-            if (!data.profile) {
-              window.location.href = "/student-login/independent/onboarding";
-            } else {
-              setData((prev) => prev ? { ...prev, hasProfile: true } : prev);
-            }
-          })
-          .catch(() => {});
+        setLoading(false);
       }
     } catch {}
 

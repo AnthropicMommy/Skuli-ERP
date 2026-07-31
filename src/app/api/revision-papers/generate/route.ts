@@ -140,7 +140,8 @@ Return ONLY valid JSON (no markdown, no explanation) in this exact format:
         term,
         assessmentType,
         year: new Date().getFullYear(),
-        fileUrl: "", // Will be set after PDF generation
+        content: JSON.stringify(paper),
+        fileUrl: "",
       },
     });
 

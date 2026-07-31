@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { getSidebarItems, getRoleLabel } from "@/lib/roles";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { SchoolRole } from "@/generated/prisma/client";
 
 const ICON_PATHS: Record<string, string> = {
@@ -70,15 +71,18 @@ export function DashboardSidebar({ schoolName, userName, userRole }: DashboardSi
       </nav>
 
       <div className="p-2 border-t border-border">
-        <div className="flex items-center gap-2.5 px-2 py-1.5">
-          <UserButton
-            appearance={{
-              elements: { avatarBox: "h-7 w-7" },
-            }}
-          />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[var(--text-primary)] truncate">{userName}</p>
-            <p className="text-xs text-[var(--text-tertiary)] truncate">{getRoleLabel(userRole)}</p>
+        <div className="flex items-center gap-2 px-2 py-1.5">
+          <ThemeToggle />
+          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+            <UserButton
+              appearance={{
+                elements: { avatarBox: "h-7 w-7" },
+              }}
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-[var(--text-primary)] truncate">{userName}</p>
+              <p className="text-xs text-[var(--text-tertiary)] truncate">{getRoleLabel(userRole)}</p>
+            </div>
           </div>
         </div>
       </div>

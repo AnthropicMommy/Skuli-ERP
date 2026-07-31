@@ -182,6 +182,7 @@ async function generatePaper(combo: PaperCombo, attempt = 1): Promise<boolean> {
         term: combo.term,
         assessmentType: combo.assessmentType,
         year: 2026,
+        content: JSON.stringify(paper),
         fileUrl: "",
       },
     });

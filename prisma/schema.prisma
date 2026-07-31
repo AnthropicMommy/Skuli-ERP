@@ -746,6 +746,7 @@ model RevisionPaper {
   term           String // "Term 1", "Term 2", "Term 3"
   assessmentType String // "Opener", "Mid-Term", "End-Term", "KPSEA", "KJSEA", "KCSE"
   year           Int
+  content        String?  @db.Text // Full paper JSON
   fileUrl        String
   fileSize       Int?     // bytes
   downloadCount  Int      @default(0)

@@ -6,8 +6,9 @@ import { getCbcSubjects } from "@/lib/cbc";
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-const INDEPENDENT_SESSION_MAX_TOKENS = 8000;
-const INDEPENDENT_SESSION_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours
+const INDEPENDENT_SESSION_MAX_TOKENS = 12000;
+const INDEPENDENT_SESSION_DURATION_MS = 4 * 60 * 60 * 1000; // 4 hours
+const INDEPENDENT_DAILY_SESSIONS = 2; // Allow 2 sessions per day
 
 export async function POST(req: Request) {
   const token = getTokenFromRequest(req);
@@ -41,21 +42,28 @@ export async function POST(req: Request) {
     });
 
     if (!activeSession) {
-      // Check if there's an expired session today — limit to 1 per day
+      // Check how many sessions today (allow up to INDEPENDENT_DAILY_SESSIONS)
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
-      const todaySession = await prisma.mwalimuSession.findFirst({
+      const todaySessions = await prisma.mwalimuSession.findMany({
         where: {
           studentId,
           createdAt: { gte: todayStart },
         },
+        orderBy: { createdAt: "desc" },
       });
 
-      if (todaySession) {
+      // Count non-expired sessions
+      const activeTodaySessions = todaySessions.filter(
+        (s) => s.expiresAt > new Date()
+      );
+
+      if (activeTodaySessions.length >= INDEPENDENT_DAILY_SESSIONS) {
+        const nextReset = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
         return NextResponse.json({
           error: "session_limit",
-          message: "You've used your session for today. Come back tomorrow!",
-          resetsAt: new Date(todayStart.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+          message: "You've used all your sessions for today. Come back tomorrow!",
+          resetsAt: nextReset.toISOString(),
         }, { status: 429 });
       }
 

@@ -37,6 +37,17 @@ export async function GET(req: Request) {
     where,
     orderBy: [{ year: "desc" }, { grade: "asc" }, { subject: "asc" }],
     take: 100,
+    select: {
+      id: true,
+      title: true,
+      grade: true,
+      subject: true,
+      term: true,
+      assessmentType: true,
+      year: true,
+      downloadCount: true,
+      createdAt: true,
+    },
   });
 
   // Merge hardcoded options with any DB-specific values

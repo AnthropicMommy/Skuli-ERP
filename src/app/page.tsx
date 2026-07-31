@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useScrollParallax } from "@/hooks/use-scroll-parallax";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function HomePage() {
   const parallaxOffset = useScrollParallax(0.15);
@@ -38,6 +39,7 @@ export default function HomePage() {
             <Link href="/portal/login" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200">
               Parent Login
             </Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
