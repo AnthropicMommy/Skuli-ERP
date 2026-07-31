@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
 
 type Material = {
   id: string;
@@ -21,10 +20,10 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  pdf: "bg-red-100 text-red-700",
-  worksheet: "bg-blue-100 text-blue-700",
-  past_paper: "bg-purple-100 text-purple-700",
-  other: "bg-gray-100 text-gray-700",
+  pdf: "bg-[var(--destructive)]/10 text-[var(--destructive)] border-[var(--destructive)]/20",
+  worksheet: "bg-primary/10 text-primary border-primary/20",
+  past_paper: "bg-[var(--rubric-ae)]/10 text-[var(--rubric-ae)] border-[var(--rubric-ae)]/20",
+  other: "bg-[var(--surface-hover)] text-[var(--text-secondary)] border-border",
 };
 
 export function StudentMaterials({ studentId }: { studentId: string }) {
@@ -52,7 +51,7 @@ export function StudentMaterials({ studentId }: { studentId: string }) {
   }, {} as Record<string, Material[]>);
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading materials...</div>;
+    return <div className="text-center py-12 text-[var(--text-tertiary)]">Loading materials...</div>;
   }
 
   return (
@@ -61,8 +60,8 @@ export function StudentMaterials({ studentId }: { studentId: string }) {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setFilterSubject("")}
-            className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
-              !filterSubject ? "bg-black text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            className={`text-xs px-3 py-1.5 rounded-full font-medium transition border ${
+              !filterSubject ? "bg-primary text-[#0A0A0A] border-primary" : "bg-[var(--surface)] text-[var(--text-secondary)] border-border hover:bg-[var(--surface-hover)]"
             }`}
           >
             All ({materials.length})
@@ -71,8 +70,8 @@ export function StudentMaterials({ studentId }: { studentId: string }) {
             <button
               key={s}
               onClick={() => setFilterSubject(s)}
-              className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
-                filterSubject === s ? "bg-black text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              className={`text-xs px-3 py-1.5 rounded-full font-medium transition border ${
+                filterSubject === s ? "bg-primary text-[#0A0A0A] border-primary" : "bg-[var(--surface)] text-[var(--text-secondary)] border-border hover:bg-[var(--surface-hover)]"
               }`}
             >
               {s} ({materials.filter((m) => m.subject === s).length})
@@ -82,7 +81,7 @@ export function StudentMaterials({ studentId }: { studentId: string }) {
       )}
 
       {Object.keys(grouped).length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-[var(--text-tertiary)]">
           {materials.length === 0
             ? "No study materials uploaded yet. Check back soon!"
             : "No materials for this subject."}
@@ -90,7 +89,7 @@ export function StudentMaterials({ studentId }: { studentId: string }) {
       ) : (
         Object.entries(grouped).map(([subject, items]) => (
           <div key={subject}>
-            <h3 className="text-sm font-semibold text-slate-700 mb-3">{subject}</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">{subject}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {items.map((m) => (
                 <a
@@ -98,18 +97,18 @@ export function StudentMaterials({ studentId }: { studentId: string }) {
                   href={m.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white rounded-xl border border-slate-200 p-4 hover:border-slate-300 hover:shadow-sm transition block"
+                  className="bg-[var(--surface)] rounded-xl border border-border p-4 hover:border-[var(--border-strong)] transition block"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-medium text-slate-900 text-sm leading-tight">{m.title}</h4>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium whitespace-nowrap ${TYPE_COLORS[m.type] || TYPE_COLORS.other}`}>
+                    <h4 className="font-medium text-[var(--text-primary)] text-sm leading-tight">{m.title}</h4>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium whitespace-nowrap border ${TYPE_COLORS[m.type] || TYPE_COLORS.other}`}>
                       {TYPE_LABELS[m.type] || m.type}
                     </span>
                   </div>
                   {m.description && (
-                    <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{m.description}</p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1.5 line-clamp-2">{m.description}</p>
                   )}
-                  <p className="text-[10px] text-slate-400 mt-2">
+                  <p className="text-[10px] text-[var(--text-tertiary)] mt-2">
                     Uploaded {new Date(m.createdAt).toLocaleDateString()}
                   </p>
                 </a>
