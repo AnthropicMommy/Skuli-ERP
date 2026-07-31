@@ -1,41 +1,7 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 
 export default function ParentSignupPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  async function handleSignup(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    const res = await fetch("/api/parent/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, firstName, lastName, phone }),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      document.cookie = `skuli_token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
-      router.push("/portal");
-    } else {
-      const data = await res.json();
-      setError(data.error || "Signup failed");
-    }
-    setLoading(false);
-  }
-
   return (
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
@@ -50,44 +16,29 @@ export default function ParentSignupPage() {
           <p className="text-sm text-[var(--text-tertiary)] mt-1">Create an account to track your child&apos;s progress.</p>
         </div>
 
-        <form onSubmit={handleSignup} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">First Name</label>
-              <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Last Name</label>
-              <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors" />
-            </div>
-          </div>
+        <SignUp
+          routing="path"
+          path="/portal/signup"
+          signInUrl="/portal/login"
+          fallbackRedirectUrl="/portal"
+          appearance={{
+            elements: {
+              rootBox: "mx-auto",
+              card: "bg-[var(--surface)] border border-border shadow-none",
+              headerTitle: "text-[var(--text-primary)]",
+              headerSubtitle: "text-[var(--text-tertiary)]",
+              socialButtonsBlockButton: "bg-[var(--background)] border border-border text-[var(--text-primary)] hover:bg-[var(--surface-hover)]",
+              socialButtonsBlockButtonText: "text-[var(--text-primary)]",
+              formFieldLabel: "text-[var(--text-primary)]",
+              formFieldInput: "bg-[var(--background)] border-border text-[var(--text-primary)]",
+              formButtonPrimary: "bg-primary hover:bg-primary/90",
+              footerActionLink: "text-primary hover:text-primary/80",
+            },
+          }}
+        />
 
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Phone (optional)</label>
-            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712 345 678" className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors" />
-          </div>
-
-          {error && <p className="text-sm text-[var(--destructive)] bg-[var(--destructive)]/10 px-3 py-2 rounded-lg border border-[var(--destructive)]/20">{error}</p>}
-
-          <button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-all hover:scale-[0.98] active:scale-[0.97] disabled:opacity-50 disabled:hover:scale-100">
-            {loading ? "Creating account..." : "Sign up"}
-          </button>
-        </form>
-
-        <div className="text-center mt-6">
-          <Link href="/portal/login" className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-border text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all">
-            Sign in
-          </Link>
+        <div className="mt-6 text-center">
+          <Link href="/" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block transition-colors">Back to home</Link>
         </div>
       </div>
     </div>

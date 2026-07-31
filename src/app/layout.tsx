@@ -17,9 +17,6 @@ export const metadata: Metadata = {
   title: "Skuli — Making Schools Great Again",
   description:
     "Assignments, learning resources, report cards, and parent communication — in one place. Built around the student. Free onboarding.",
-  icons: {
-    icon: "/favicon.svg",
-  },
 };
 
 export default function RootLayout({
@@ -32,6 +29,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      </head>
       <body className="min-h-full flex flex-col">
         <ClerkProvider>{children}</ClerkProvider>
       </body>

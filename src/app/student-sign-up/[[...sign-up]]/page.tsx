@@ -1,5 +1,3 @@
-"use client";
-
 import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -15,7 +13,7 @@ export default function StudentSignUpPage() {
             <span className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">Skuli</span>
           </Link>
           <h1 className="text-xl font-semibold text-[var(--text-primary)]">Student sign up</h1>
-          <p className="text-sm text-[var(--text-tertiary)] mt-1">Create your account with Google.</p>
+          <p className="text-sm text-[var(--text-tertiary)] mt-1">Create your account to get started.</p>
         </div>
 
         <SignUp
@@ -39,10 +37,9 @@ export default function StudentSignUpPage() {
           }}
         />
 
-        <p className="text-center text-sm text-[var(--text-tertiary)] mt-6">
-          Already have an account? <Link href="/student-sign-in" className="text-[var(--text-primary)] font-medium hover:underline">Sign in</Link>
-        </p>
-        <Link href="/" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block mt-4 text-center transition-colors">Back to home</Link>
+        <div className="mt-6 text-center">
+          <Link href="/" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block transition-colors">Back to home</Link>
+        </div>
       </div>
     </div>
   );

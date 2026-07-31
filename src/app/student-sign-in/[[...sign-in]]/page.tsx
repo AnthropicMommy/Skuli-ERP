@@ -1,5 +1,3 @@
-"use client";
-
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -15,7 +13,7 @@ export default function StudentSignInPage() {
             <span className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">Skuli</span>
           </Link>
           <h1 className="text-xl font-semibold text-[var(--text-primary)]">Student sign in</h1>
-          <p className="text-sm text-[var(--text-tertiary)] mt-1">Sign in with Google to access your account.</p>
+          <p className="text-sm text-[var(--text-tertiary)] mt-1">Sign in to access your account.</p>
         </div>
 
         <SignIn
@@ -40,11 +38,7 @@ export default function StudentSignInPage() {
         />
 
         <div className="mt-6 text-center space-y-3">
-          <p className="text-xs text-[var(--text-tertiary)]">Or sign in with your school account</p>
-          <Link href="/student-login" className="w-full inline-flex items-center justify-center bg-[var(--surface)] border border-border text-[var(--text-primary)] text-sm font-medium px-4 py-3 rounded-lg hover:bg-[var(--surface-hover)] transition-all">
-            Sign in with Student ID
-          </Link>
-          <Link href="/" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block mt-4 transition-colors">Back to home</Link>
+          <Link href="/student-login" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block transition-colors">Back to student login</Link>
         </div>
       </div>
     </div>

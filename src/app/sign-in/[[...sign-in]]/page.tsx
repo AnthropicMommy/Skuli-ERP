@@ -22,6 +22,20 @@ export default function SignInPage() {
           path="/sign-in"
           signUpUrl="/sign-up"
           forceRedirectUrl="/dashboard"
+          appearance={{
+            elements: {
+              rootBox: "mx-auto",
+              card: "bg-[var(--surface)] border border-border shadow-none",
+              headerTitle: "text-[var(--text-primary)]",
+              headerSubtitle: "text-[var(--text-tertiary)]",
+              socialButtonsBlockButton: "bg-[var(--background)] border border-border text-[var(--text-primary)] hover:bg-[var(--surface-hover)]",
+              socialButtonsBlockButtonText: "text-[var(--text-primary)]",
+              formFieldLabel: "text-[var(--text-primary)]",
+              formFieldInput: "bg-[var(--background)] border-border text-[var(--text-primary)]",
+              formButtonPrimary: "bg-primary hover:bg-primary/90",
+              footerActionLink: "text-primary hover:text-primary/80",
+            },
+          }}
         />
         <div className="text-center mt-6">
           <Link href="/sign-up" className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-border text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all">

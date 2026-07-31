@@ -1,78 +1,10 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 
-interface School {
-  id: string;
-  name: string;
-}
-
 export default function LoginPage() {
-  const router = useRouter();
-  const [step, setStep] = useState<"search" | "login">("search");
-  const [schoolQuery, setSchoolQuery] = useState("");
-  const [schools, setSchools] = useState<School[]>([]);
-  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
-  const [staffId, setStaffId] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [searching, setSearching] = useState(false);
-
-  async function searchSchools(q: string) {
-    setSchoolQuery(q);
-    if (q.length < 2) {
-      setSchools([]);
-      return;
-    }
-    setSearching(true);
-    const res = await fetch(`/api/schools/search?q=${encodeURIComponent(q)}`);
-    const data = await res.json();
-    setSchools(data);
-    setSearching(false);
-  }
-
-  function selectSchool(school: School) {
-    setSelectedSchool(school);
-    setStep("login");
-    setError("");
-  }
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    const res = await fetch("/api/auth/staff", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        schoolId: selectedSchool!.id,
-        staffId,
-        password,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok && data.clerkUserId) {
-      window.location.href = "/sign-in";
-    } else {
-      setError(data.error || "Login failed");
-      if (data.schoolContact) {
-        setError(
-          `${data.error} Contact: ${data.schoolContact.phone || "No phone"} / ${data.schoolContact.email || "No email"}`
-        );
-      }
-    }
-    setLoading(false);
-  }
-
   return (
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-8">
             <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -80,120 +12,32 @@ export default function LoginPage() {
             </svg>
             <span className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">Skuli</span>
           </Link>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Sign in to Skuli</h1>
-          <p className="text-sm text-[var(--text-tertiary)] mt-1">School management made simple</p>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Staff sign in</h1>
+          <p className="text-sm text-[var(--text-tertiary)] mt-1">Sign in to your school dashboard.</p>
         </div>
 
-        {step === "search" && (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Find your school</label>
-              <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                </svg>
-                <input
-                  type="text"
-                  value={schoolQuery}
-                  onChange={(e) => searchSchools(e.target.value)}
-                  placeholder="Search by school name..."
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
-                  autoFocus
-                />
-              </div>
-            </div>
+        <SignIn
+          routing="path"
+          path="/login"
+          signUpUrl="/sign-up"
+          fallbackRedirectUrl="/dashboard"
+          appearance={{
+            elements: {
+              rootBox: "mx-auto",
+              card: "bg-[var(--surface)] border border-border shadow-none",
+              headerTitle: "text-[var(--text-primary)]",
+              headerSubtitle: "text-[var(--text-tertiary)]",
+              socialButtonsBlockButton: "bg-[var(--background)] border border-border text-[var(--text-primary)] hover:bg-[var(--surface-hover)]",
+              socialButtonsBlockButtonText: "text-[var(--text-primary)]",
+              formFieldLabel: "text-[var(--text-primary)]",
+              formFieldInput: "bg-[var(--background)] border-border text-[var(--text-primary)]",
+              formButtonPrimary: "bg-primary hover:bg-primary/90",
+              footerActionLink: "text-primary hover:text-primary/80",
+            },
+          }}
+        />
 
-            {schools.length > 0 && (
-              <div className="border border-border rounded-lg divide-y divide-border overflow-hidden">
-                {schools.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => selectSchool(s)}
-                    className="w-full text-left px-4 py-3 hover:bg-[var(--surface-hover)] transition-colors text-sm text-[var(--text-primary)]"
-                  >
-                    {s.name}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {searching && (
-              <p className="text-xs text-[var(--text-tertiary)] text-center">Searching...</p>
-            )}
-
-            {schoolQuery.length >= 2 && !searching && schools.length === 0 && (
-              <div className="text-center py-6">
-                <p className="text-sm text-[var(--text-tertiary)] mb-2">No schools found</p>
-                <p className="text-xs text-[var(--text-tertiary)]">
-                  Don&apos;t have an account yet? Contact your school administrator to get started.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {step === "login" && selectedSchool && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <button
-                onClick={() => { setStep("search"); setError(""); setStaffId(""); setPassword(""); }}
-                className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
-              >
-                ← Change school
-              </button>
-              <span className="text-[var(--border-strong)]">|</span>
-              <span className="text-xs text-[var(--text-secondary)] font-medium">{selectedSchool.name}</span>
-            </div>
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Staff ID</label>
-                <input
-                  type="text"
-                  value={staffId}
-                  onChange={(e) => setStaffId(e.target.value.toUpperCase())}
-                  required
-                  placeholder="e.g. STS-clx1-001"
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] font-mono tracking-wide focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
-                />
-              </div>
-
-              {error && (
-                <div className="bg-[var(--destructive)]/10 border border-[var(--destructive)]/20 rounded-lg p-3">
-                  <p className="text-xs text-[var(--destructive)]">{error}</p>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary text-primary-foreground text-sm font-medium px-4 py-3 rounded-lg hover:bg-primary/90 transition-all hover:scale-[0.98] active:scale-[0.97] disabled:opacity-50 disabled:hover:scale-100"
-              >
-                {loading ? "Signing in..." : "Sign In"}
-              </button>
-            </form>
-
-            <div className="bg-[var(--surface)] border border-border rounded-lg p-4 mt-4">
-              <p className="text-xs text-[var(--text-tertiary)] mb-2">Don&apos;t have a Staff ID?</p>
-              <p className="text-xs text-[var(--text-secondary)]">
-                Contact the school administration to get your invite code. You&apos;ll receive an email with your Staff ID and a link to set up your account.
-              </p>
-            </div>
-          </div>
-        )}
-
-        <div className="mt-8 text-center space-y-3">
+        <div className="mt-6 text-center space-y-3">
           <p className="text-xs text-[var(--text-tertiary)]">Not staff?</p>
           <div className="flex items-center justify-center gap-3">
             <Link href="/portal/login" className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-border text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all">
