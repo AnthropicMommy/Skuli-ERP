@@ -60,12 +60,26 @@ export default function IndependentSignupPage() {
             <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Grade</label>
             <select value={grade} onChange={(e) => setGrade(e.target.value)} required className="w-full px-4 py-3 rounded-lg border border-border bg-[var(--background)] text-sm text-[var(--text-primary)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors">
               <option value="">Select your grade</option>
-              <option value="1">Grade 1</option>
-              <option value="2">Grade 2</option>
-              <option value="3">Grade 3</option>
-              <option value="4">Grade 4</option>
-              <option value="5">Grade 5</option>
-              <option value="6">Grade 6</option>
+              <optgroup label="Lower Primary">
+                <option value="1">Grade 1</option>
+                <option value="2">Grade 2</option>
+                <option value="3">Grade 3</option>
+              </optgroup>
+              <optgroup label="Upper Primary">
+                <option value="4">Grade 4</option>
+                <option value="5">Grade 5</option>
+                <option value="6">Grade 6 (KPSEA)</option>
+              </optgroup>
+              <optgroup label="Junior Secondary">
+                <option value="7">Grade 7</option>
+                <option value="8">Grade 8</option>
+                <option value="9">Grade 9</option>
+              </optgroup>
+              <optgroup label="Senior Secondary">
+                <option value="10">Grade 10</option>
+                <option value="11">Grade 11</option>
+                <option value="12">Grade 12 (KCSE)</option>
+              </optgroup>
             </select>
           </div>
           <div>

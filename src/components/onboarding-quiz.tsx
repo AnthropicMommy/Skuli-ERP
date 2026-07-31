@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const GRADES = ["1", "2", "3", "4", "5", "6"];
+const GRADES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+const GRADE_LEVELS: Record<string, string> = {
+  "1": "Lower Primary", "2": "Lower Primary", "3": "Lower Primary",
+  "4": "Upper Primary", "5": "Upper Primary", "6": "Upper Primary (KPSEA)",
+  "7": "Junior Secondary", "8": "Junior Secondary", "9": "Junior Secondary",
+  "10": "Senior Secondary", "11": "Senior Secondary", "12": "Senior Secondary (KCSE)",
+};
 
 const SUBJECTS = [
   "Mathematics",
@@ -12,6 +19,14 @@ const SUBJECTS = [
   "Science & Technology",
   "Social Studies",
   "Creative Arts",
+  "Religious Education",
+  "Physical & Health Ed.",
+  "Agriculture & Nutrition",
+  "Computer Science",
+  "Home Science",
+  "Pre-Technical Education",
+  "Integrated Science",
+  "Foreign Languages",
 ];
 
 const CHALLENGES = [
@@ -85,7 +100,7 @@ export function OnboardingQuiz() {
               <h1 className="text-xl font-semibold text-[var(--text-primary)]">What grade are you in?</h1>
               <p className="text-sm text-[var(--text-tertiary)] mt-1">This helps us find the right content for you.</p>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
               {GRADES.map((g) => (
                 <button
                   key={g}
@@ -96,7 +111,8 @@ export function OnboardingQuiz() {
                       : "border-border bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]"
                   }`}
                 >
-                  Grade {g}
+                  <div>Grade {g}</div>
+                  <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{GRADE_LEVELS[g]}</div>
                 </button>
               ))}
             </div>

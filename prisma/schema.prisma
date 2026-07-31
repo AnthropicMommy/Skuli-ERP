@@ -224,6 +224,7 @@ model Student {
   notifications Notification[]
   profile       StudentProfile?
   mwalimuSessions MwalimuSession[]
+  studyTimetables StudyTimetable[]
 
   @@unique([schoolId, admissionNo])
   @@index([schoolId])
@@ -716,4 +717,42 @@ model MwalimuSession {
 
   @@index([studentId])
   @@map("mwalimu_sessions")
+}
+
+// ─── Student Study Timetable ────────────────────────────
+
+model StudyTimetable {
+  id        String   @id @default(cuid())
+  studentId String
+  dayOfWeek Int // 0=Monday, 6=Sunday
+  startTime String // "08:00"
+  endTime   String // "09:00"
+  subject   String
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@map("study_timetables")
+}
+
+// ─── CBC Revision Papers ────────────────────────────────
+
+model RevisionPaper {
+  id             String   @id @default(cuid())
+  title          String
+  grade          String
+  subject        String
+  term           String // "Term 1", "Term 2", "Term 3"
+  assessmentType String // "Opener", "Mid-Term", "End-Term", "KPSEA", "KJSEA", "KCSE"
+  year           Int
+  fileUrl        String
+  fileSize       Int?     // bytes
+  downloadCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([grade])
+  @@index([grade, subject])
+  @@index([grade, subject, term])
+  @@map("revision_papers")
 }
