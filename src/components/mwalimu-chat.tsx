@@ -7,6 +7,13 @@ interface Message {
   content: string;
 }
 
+interface SessionInfo {
+  tokensUsed: number;
+  maxTokens: number;
+  tokensRemaining: number;
+  expiresAt: string;
+}
+
 export function MwalimuChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -14,6 +21,9 @@ export function MwalimuChat() {
   const [loading, setLoading] = useState(false);
   const [subject, setSubject] = useState("");
   const [classId, setClassId] = useState("");
+  const [isIndependent, setIsIndependent] = useState(false);
+  const [session, setSession] = useState<SessionInfo | null>(null);
+  const [sessionError, setSessionError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,6 +37,7 @@ export function MwalimuChat() {
         const token = cookie.split("=")[1];
         const payload = JSON.parse(atob(token.split(".")[1]));
         if (payload.classId) setClassId(payload.classId);
+        if (payload.isIndependent) setIsIndependent(true);
       }
     } catch {}
   }, []);
@@ -39,6 +50,7 @@ export function MwalimuChat() {
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
     setLoading(true);
+    setSessionError("");
 
     const token = document.cookie.split("; ").find((c) => c.startsWith("skuli_token="))?.split("=")[1];
 
@@ -54,9 +66,17 @@ export function MwalimuChat() {
         }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
         setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+        if (data.session) {
+          setSession(data.session);
+        }
+      } else if (data.error === "session_exhausted" || data.error === "session_limit") {
+        setSessionError(data.message);
+        // Remove the user message since it wasn't processed
+        setMessages((prev) => prev.slice(0, -1));
       }
     } catch {}
 
@@ -98,6 +118,32 @@ export function MwalimuChat() {
         </button>
       </div>
 
+      {/* Session indicator for independent students */}
+      {isIndependent && session && (
+        <div className="px-4 py-2 border-b border-border bg-[var(--background)]">
+          <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] mb-1">
+            <span>Session tokens</span>
+            <span>{session.tokensUsed.toLocaleString()} / {session.maxTokens.toLocaleString()}</span>
+          </div>
+          <div className="h-1 bg-[var(--surface)] rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{
+                width: `${(session.tokensUsed / session.maxTokens) * 100}%`,
+                backgroundColor: session.tokensUsed / session.maxTokens > 0.8 ? "var(--destructive)" : "var(--primary)",
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Session error banner */}
+      {sessionError && (
+        <div className="px-4 py-3 border-b border-border bg-[var(--destructive)]/10">
+          <p className="text-xs text-[var(--destructive)]">{sessionError}</p>
+        </div>
+      )}
+
       {!subject && messages.length === 0 && (
         <div className="p-4">
           <p className="text-sm text-[var(--text-secondary)] mb-3">What subject do you need help with?</p>
@@ -136,10 +182,11 @@ export function MwalimuChat() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask Mwalimu..."
-          className="flex-1 px-3 py-1.5 border border-border rounded-lg text-sm bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-[var(--border-strong)] transition-colors"
+          placeholder={sessionError ? "Session ended" : "Ask Mwalimu..."}
+          disabled={!!sessionError}
+          className="flex-1 px-3 py-1.5 border border-border rounded-lg text-sm bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-[var(--border-strong)] transition-colors disabled:opacity-50"
         />
-        <button type="submit" disabled={loading || !input.trim()} className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-primary/90 transition disabled:opacity-50">
+        <button type="submit" disabled={loading || !input.trim() || !!sessionError} className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-primary/90 transition disabled:opacity-50">
           Send
         </button>
       </form>

@@ -6,6 +6,9 @@ import { getCbcSubjects } from "@/lib/cbc";
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+const INDEPENDENT_SESSION_MAX_TOKENS = 8000;
+const INDEPENDENT_SESSION_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours
+
 export async function POST(req: Request) {
   const token = getTokenFromRequest(req);
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,17 +20,99 @@ export async function POST(req: Request) {
   const schoolId = "schoolId" in session ? session.schoolId : null;
   if (!studentId || !schoolId) return NextResponse.json({ error: "Invalid session" }, { status: 401 });
 
+  const isIndependent = "isIndependent" in session && session.isIndependent === true;
+
   const { message, subject, classId, conversationHistory = [] } = await req.json();
   if (!message?.trim()) return NextResponse.json({ error: "Message required" }, { status: 400 });
+
+  // Session enforcement for independent students
+  let activeSession = null;
+  let sessionTokensRemaining = null;
+  let sessionExpiresAt = null;
+
+  if (isIndependent) {
+    // Find or create active session
+    activeSession = await prisma.mwalimuSession.findFirst({
+      where: {
+        studentId,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!activeSession) {
+      // Check if there's an expired session today — limit to 1 per day
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todaySession = await prisma.mwalimuSession.findFirst({
+        where: {
+          studentId,
+          createdAt: { gte: todayStart },
+        },
+      });
+
+      if (todaySession) {
+        return NextResponse.json({
+          error: "session_limit",
+          message: "You've used your session for today. Come back tomorrow!",
+          resetsAt: new Date(todayStart.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+        }, { status: 429 });
+      }
+
+      // Create new session
+      activeSession = await prisma.mwalimuSession.create({
+        data: {
+          studentId,
+          maxTokens: INDEPENDENT_SESSION_MAX_TOKENS,
+          expiresAt: new Date(Date.now() + INDEPENDENT_SESSION_DURATION_MS),
+        },
+      });
+    }
+
+    // Check if session is exhausted
+    if (activeSession.tokensUsed >= activeSession.maxTokens) {
+      return NextResponse.json({
+        error: "session_exhausted",
+        message: "Session token limit reached. Start a new session tomorrow!",
+        tokensUsed: activeSession.tokensUsed,
+        maxTokens: activeSession.maxTokens,
+        expiresAt: activeSession.expiresAt.toISOString(),
+      }, { status: 429 });
+    }
+
+    sessionTokensRemaining = activeSession.maxTokens - activeSession.tokensUsed;
+    sessionExpiresAt = activeSession.expiresAt.toISOString();
+  }
 
   const grade = "grade" in session ? Number(session.grade) : 4;
   const studentName = "name" in session ? session.name : "Student";
   const subjects = getCbcSubjects(grade);
   const subjectList = subjects.map((s) => s.name).join(", ");
 
-  // Fetch relevant materials for RAG-lite
+  // Fetch student profile for personalized prompts
+  let profileContext = "";
+  if (isIndependent) {
+    try {
+      const profile = await prisma.studentProfile.findUnique({
+        where: { studentId },
+      });
+      if (profile) {
+        const parsedSubjects = JSON.parse(profile.subjects);
+        profileContext = `\n\nStudent profile:
+- Grade: ${profile.grade}
+- Subjects they need help with: ${parsedSubjects.join(", ")}
+- Biggest challenge: ${profile.challenge}
+- Main goal: ${profile.goal}
+Tailor your responses to focus on their challenge areas and goal.`;
+      }
+    } catch {
+      // Profile fetch failure is non-critical
+    }
+  }
+
+  // Fetch relevant materials for RAG-lite (school students only)
   let materialContext = "";
-  if (subject && classId) {
+  if (!isIndependent && subject && classId) {
     try {
       const materials = await prisma.material.findMany({
         where: {
@@ -51,7 +136,7 @@ export async function POST(req: Request) {
 Student: ${studentName}, Grade ${grade}${classId ? ` (Class ID: ${classId})` : ""}
 Available subjects: ${subjectList}
 ${subject ? `Current subject: ${subject}` : ""}
-${materialContext}
+${profileContext}${materialContext}
 
 Your role:
 - Explain concepts simply, appropriate for the grade level
@@ -62,9 +147,11 @@ Your role:
 - For lower grades (1-3), use very simple language and examples
 - For upper grades (4-6), use more detailed explanations
 - Reference Kenyan context (shillings, local examples, Kenyan culture)
+- Research topics thoroughly when asked
+- Help solve hard equations step-by-step
+- Suggest practice problems to reinforce learning
 
-Always be encouraging and patient. Use emojis适度 to keep it friendly.
-Keep responses concise — students have short attention spans.
+Always be encouraging and patient. Keep responses concise — students have short attention spans.
 If a student asks about a topic not in their curriculum, gently redirect them.
 Stay on subject. Do not engage in off-topic conversation.`;
 
@@ -131,6 +218,7 @@ Stay on subject. Do not engage in off-topic conversation.`;
 
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't understand that. Can you try again?";
+    const tokensUsed = data.usage?.total_tokens || 0;
 
     // Save assistant response to DB
     if (studentId) {
@@ -149,7 +237,30 @@ Stay on subject. Do not engage in off-topic conversation.`;
       }
     }
 
-    return NextResponse.json({ reply });
+    // Update session token usage for independent students
+    if (isIndependent && activeSession) {
+      try {
+        const updatedSession = await prisma.mwalimuSession.update({
+          where: { id: activeSession.id },
+          data: { tokensUsed: { increment: tokensUsed } },
+        });
+        sessionTokensRemaining = updatedSession.maxTokens - updatedSession.tokensUsed;
+      } catch {
+        // Session update failure is non-critical
+      }
+    }
+
+    return NextResponse.json({
+      reply,
+      ...(isIndependent && {
+        session: {
+          tokensUsed: (activeSession?.tokensUsed || 0) + tokensUsed,
+          maxTokens: activeSession?.maxTokens || INDEPENDENT_SESSION_MAX_TOKENS,
+          tokensRemaining: sessionTokensRemaining,
+          expiresAt: sessionExpiresAt,
+        },
+      }),
+    });
   } catch (error) {
     console.error("Mwalimu error:", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

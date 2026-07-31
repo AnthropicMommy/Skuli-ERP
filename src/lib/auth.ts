@@ -10,6 +10,7 @@ export interface StudentSession {
   name: string;
   grade: string;
   classId?: string;
+  isIndependent?: boolean;
 }
 
 export interface ParentSession {

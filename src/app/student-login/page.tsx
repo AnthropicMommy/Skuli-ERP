@@ -125,7 +125,18 @@ export default function StudentLoginPage() {
           <button onClick={() => setMode("signup")} className="w-full bg-primary text-primary-foreground text-sm font-medium px-4 py-3 rounded-lg hover:bg-primary/90 transition-all hover:scale-[0.98] active:scale-[0.97]">
             Sign up as Student
           </button>
-          <div className="flex items-center justify-center gap-3">
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-[var(--background)] px-2 text-[var(--text-tertiary)]">or</span>
+            </div>
+          </div>
+          <Link href="/student-login/independent" className="w-full inline-flex items-center justify-center bg-[var(--surface)] border border-border text-[var(--text-primary)] text-sm font-medium px-4 py-3 rounded-lg hover:bg-[var(--surface-hover)] transition-all hover:scale-[0.98] active:scale-[0.97]">
+            Study Independently
+          </Link>
+          <div className="flex items-center justify-center gap-3 mt-4">
             <Link href="/portal/login" className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-border text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all">Parent Portal</Link>
             <Link href="/login" className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-border text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all">Staff Portal</Link>
           </div>

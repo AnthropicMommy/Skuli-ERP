@@ -222,6 +222,8 @@ model Student {
   attendance    Attendance[]
   submissions   AssignmentSubmission[]
   notifications Notification[]
+  profile       StudentProfile?
+  mwalimuSessions MwalimuSession[]
 
   @@unique([schoolId, admissionNo])
   @@index([schoolId])
@@ -681,4 +683,37 @@ model MwalimuMessage {
   @@index([studentId, subject])
   @@index([classId])
   @@map("mwalimu_messages")
+}
+
+// ─── Student Profile (Onboarding Quiz) ──────────────────
+
+model StudentProfile {
+  id        String   @id @default(cuid())
+  studentId String   @unique
+  grade     String
+  subjects  String // JSON array: ["Math", "English", ...]
+  challenge String // "concepts" | "problems" | "exams" | "resources"
+  goal      String // "pass" | "top-marks" | "understand" | "explore"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+// ─── Mwalimu Session (Usage Tracking) ───────────────────
+
+model MwalimuSession {
+  id         String   @id @default(cuid())
+  studentId  String
+  tokensUsed Int      @default(0)
+  maxTokens  Int      @default(8000)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@map("mwalimu_sessions")
 }
