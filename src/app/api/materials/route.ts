@@ -17,6 +17,7 @@ export async function POST(req: Request) {
   const subject = formData.get("subject") as string;
   const type = formData.get("type") as string;
   const classId = formData.get("classId") as string;
+  const visibility = (formData.get("visibility") as string) || "school";
 
   if (!file || !title || !subject || !classId) {
     return NextResponse.json({ error: "file, title, subject, and classId are required" }, { status: 400 });
@@ -50,6 +51,7 @@ export async function POST(req: Request) {
       organizationId: staff.schoolId,
       classId,
       uploadedById: staff.id,
+      visibility: visibility === "public" ? "public" : "school",
     },
   });
 
@@ -87,7 +89,13 @@ export async function GET(req: Request) {
 
   if (!schoolId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const where: Record<string, unknown> = { organizationId: schoolId };
+  // Include school materials + public materials from all schools
+  const where: Record<string, unknown> = {
+    OR: [
+      { organizationId: schoolId },
+      { visibility: "public" },
+    ],
+  };
   if (classId) where.classId = classId;
   if (subject) where.subject = subject;
 
@@ -95,6 +103,19 @@ export async function GET(req: Request) {
     where,
     orderBy: { createdAt: "desc" },
     take: 100,
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      subject: true,
+      type: true,
+      fileUrl: true,
+      organizationId: true,
+      classId: true,
+      uploadedById: true,
+      visibility: true,
+      createdAt: true,
+    },
   });
 
   return NextResponse.json(materials);

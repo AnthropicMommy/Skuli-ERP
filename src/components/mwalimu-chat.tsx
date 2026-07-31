@@ -74,10 +74,6 @@ export function MwalimuChat() {
         if (data.session) {
           setSession(data.session);
         }
-      } else if (data.error === "session_exhausted" || data.error === "session_limit") {
-        setSessionError(data.message);
-        // Remove the user message since it wasn't processed
-        setMessages((prev) => prev.slice(0, -1));
       }
     } catch {}
 
@@ -128,31 +124,14 @@ export function MwalimuChat() {
         </div>
       </div>
 
-      {/* Session indicator for independent students */}
+      {/* Session info for independent students */}
       {isIndependent && session && (
-        <div className="px-4 py-2 border-b border-border bg-[var(--background)]">
-          <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] mb-1">
-            <span>Session tokens</span>
-            <span>{session.tokensUsed.toLocaleString()} / {session.maxTokens.toLocaleString()}</span>
-          </div>
-          <div className="h-1 bg-[var(--surface)] rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-300"
-              style={{
-                width: `${(session.tokensUsed / session.maxTokens) * 100}%`,
-                backgroundColor: session.tokensUsed / session.maxTokens > 0.8 ? "var(--destructive)" : "var(--primary)",
-              }}
-            />
-          </div>
+        <div className="px-4 py-1.5 border-b border-border bg-[var(--background)]">
+          <p className="text-xs text-[var(--text-tertiary)]">Free unlimited sessions — learn as much as you want</p>
         </div>
       )}
 
-      {/* Session error banner */}
-      {sessionError && (
-        <div className="px-4 py-3 border-b border-border bg-[var(--destructive)]/10">
-          <p className="text-xs text-[var(--destructive)]">{sessionError}</p>
-        </div>
-      )}
+      {/* Messages area */}
 
       {!subject && messages.length === 0 && (
         <div className="p-4">

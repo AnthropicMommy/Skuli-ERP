@@ -34,6 +34,7 @@ const MODULE_ACCESS: Record<string, SchoolRole[]> = {
   timetable: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "TEACHER"],
   assignments: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER"],
   library: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "LIBRARIAN"],
+  contribute: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER"],
   notifications: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "SECRETARY"],
   reports: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "HOD", "CLASS_TEACHER", "TEACHER", "SENIOR_TEACHER"],
   dashboard: ["SUPER_ADMIN", "DIRECTOR", "PRINCIPAL", "DEPUTY_ACADEMICS", "DEPUTY_ADMIN", "BURSAR", "HOD", "TEACHER", "CLASS_TEACHER", "SENIOR_TEACHER", "STUDENT", "PARENT", "BOARD_MEMBER"],
@@ -119,6 +120,10 @@ export function getSidebarItems(role: SchoolRole): { label: string; href: string
 
   if (canAccessModule(role, "library")) {
     items.push({ label: "Library", href: "/dashboard/library", icon: "Library" });
+  }
+
+  if (canAccessModule(role, "contribute")) {
+    items.push({ label: "Contribute Materials", href: "/dashboard/contribute", icon: "Library" });
   }
 
   if (canAccessModule(role, "notifications")) {

@@ -536,11 +536,13 @@ model Material {
   organizationId String
   classId        String
   uploadedById   String
+  visibility     String   @default("school") // "school" | "public"
   createdAt      DateTime @default(now())
 
   school School @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId, classId])
+  @@index([visibility])
   @@map("materials")
 }
 
