@@ -759,3 +759,27 @@ model RevisionPaper {
   @@index([grade, subject, term])
   @@map("revision_papers")
 }
+
+// ─── Source Materials (Scraped from teacher.co.ke, freeexams.co.ke) ───
+
+model SourceMaterial {
+  id             String   @id @default(cuid())
+  title          String
+  description    String?
+  subject        String
+  grade          String   // "7", "8", "9", "10", "11", "12", "kcse", "kjsea", "pp1", "pp2"
+  materialType   String   // "notes", "past_paper", "scheme", "lesson_plan", "curriculum_design", "other"
+  source         String   // "teacher.co.ke", "freeexams.co.ke"
+  sourceUrl      String?  // original URL
+  fileUrl        String   // local file path or blob URL
+  fileSize       Int?     // bytes
+  fileExtension  String?  // "pdf", "docx", "pptx"
+  downloadCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([grade])
+  @@index([grade, subject])
+  @@index([materialType])
+  @@index([source])
+  @@map("source_materials")
+}

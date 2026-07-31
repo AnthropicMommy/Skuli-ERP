@@ -18,3 +18,9 @@ src/generated/
 # misc
 *.tsbuildinfo
 .vercel
+
+# Scraped materials (too large for git)
+teacher-co-ke-materials/
+freeexams-materials/
+cleaned-materials/
+prisma/seed-source-materials.json
