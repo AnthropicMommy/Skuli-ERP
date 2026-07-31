@@ -53,7 +53,7 @@ export function OnboardingQuiz() {
       body: JSON.stringify({ grade, subjects: selectedSubjects, challenge, goal }),
     });
     if (res.ok) {
-      router.refresh();
+      router.push("/student");
     } else {
       const data = await res.json();
       setError(data.error || "Something went wrong");
