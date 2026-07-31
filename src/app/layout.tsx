@@ -14,9 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Skuli — The Operating System for Kenyan Schools",
+  title: "Skuli — Making Schools Great Again",
   description:
-    "Attendance, grades, timetables, and parent communication — in one place. Built for CBC. Free onboarding.",
+    "Assignments, learning resources, report cards, and parent communication — in one place. Built around the student. Free onboarding.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

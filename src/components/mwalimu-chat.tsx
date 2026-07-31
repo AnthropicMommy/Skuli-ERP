@@ -16,6 +16,7 @@ interface SessionInfo {
 
 export function MwalimuChat() {
   const [open, setOpen] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -97,7 +98,9 @@ export function MwalimuChat() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-80 h-96 bg-[var(--surface)] border border-border rounded-xl flex flex-col z-50">
+    <div className={`fixed z-50 flex flex-col bg-[var(--surface)] border border-border ${
+      fullscreen ? "inset-0" : "bottom-6 right-6 w-80 h-96 rounded-xl"
+    }`}>
       <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-[var(--background)]">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg border border-border bg-[var(--surface)] flex items-center justify-center">
@@ -111,11 +114,18 @@ export function MwalimuChat() {
             <p className="text-xs text-[var(--text-tertiary)]">AI Learning Assistant</p>
           </div>
         </div>
-        <button onClick={() => setOpen(false)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-1">
+          <button onClick={() => setFullscreen(!fullscreen)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] p-1">
+            {fullscreen ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" /></svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
+            )}
+          </button>
+          <button onClick={() => setOpen(false)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] p-1">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
       </div>
 
       {/* Session indicator for independent students */}
