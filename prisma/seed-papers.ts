@@ -31,7 +31,9 @@ interface PaperContent {
   sections: Section[];
 }
 
-const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string[]; mcqAnswers: string[]; shortAnswers: string[]; longAnswers: string[] }> = {
+// MCQ format: [question, correctAnswer, distractor1, distractor2, distractor3]
+// Options will be shuffled during generation so correct answer lands on random A/B/C/D
+const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string[]; shortAnswers: string[]; longAnswers: string[] }> = {
   "Literacy Activities": {
     mcq: [
       ["Which word starts with the letter M?", "Mat", "Cat", "Dog", "Sun"],
@@ -45,7 +47,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is the plural of 'box'?", "boxes", "boxs", "boxies", "boxen"],
       ["Pick the correct spelling:", "beautiful", "beutiful", "beautful", "beautifull"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Write three words that start with the letter B.",
       "What did you do yesterday? Write two sentences.",
@@ -76,7 +77,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is the home of a bird called?", "Nest", "Den", "Cave", "Hole"],
       ["Which body part do we use to see?", "Eyes", "Ears", "Nose", "Mouth"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Name four things that are good for our environment.",
       "Why should we not throw litter on the ground?",
@@ -107,7 +107,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is the plural of 'child'?", "children", "childs", "childen", "childes"],
       ["Which word means the opposite of 'ancient'?", "modern", "old", "huge", "slow"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Define the following: noun, verb, adjective. Give one example of each.",
       "Write a short paragraph (4-5 sentences) about your best friend.",
@@ -138,7 +137,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is 15 × 4?", "60", "55", "64", "45"],
       ["What time is it if the clock hand is on 12?", "12:00", "6:00", "3:00", "9:00"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "A farmer has 156 chickens. He sells 78. How many chickens does he have left? Show your working.",
       "Calculate the area of a rectangle with length 8cm and width 5cm.",
@@ -169,7 +167,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["Which mineral is mined in Kenyan coast?", "Salt", "Gold", "Diamond", "Copper"],
       ["What does devolution mean?", "Sharing power to counties", "Centralizing power", "Building roads", "Collecting taxes"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Name three natural resources found in Kenya.",
       "Explain why Kenya's location near the equator is beneficial.",
@@ -200,7 +197,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["Which planet is closest to the sun?", "Mercury", "Venus", "Earth", "Mars"],
       ["What is the function of roots?", "Absorb water and nutrients", "Make food", "Produce seeds", "Attract insects"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain the difference between renewable and non-renewable energy sources. Give two examples of each.",
       "Describe the water cycle in four steps.",
@@ -231,7 +227,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["Which organ filters blood in the body?", "Kidneys", "Heart", "Lungs", "Brain"],
       ["What is the SI unit of electric current?", "Ampere", "Volt", "Ohm", "Watt"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain the difference between mass and weight. Include their units of measurement.",
       "What are the three states of matter? Give one example of each.",
@@ -262,7 +257,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What does URL stand for?", "Uniform Resource Locator", "Universal Resource Link", "Uniform Reference Locator", "Universal Resource Locator"],
       ["Which company created Windows?", "Microsoft", "Apple", "Google", "Samsung"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain the difference between hardware and software. Give three examples of each.",
       "What are the four main operations of a computer? Describe each.",
@@ -293,7 +287,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is the unit of electric charge?", "Coulomb", "Volt", "Ampere", "Ohm"],
       ["Which quantity is a vector?", "Force", "Speed", "Mass", "Energy"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "A car accelerates from rest to 30 m/s in 6 seconds. Calculate its acceleration.",
       "Explain the difference between distance and displacement.",
@@ -324,7 +317,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is the common name for iron(III)oxide?", "Rust", "Sand", "Salt", "Sugar"],
       ["Which acid is found in vinegar?", "Acetic acid", "Citric acid", "Hydrochloric acid", "Sulphuric acid"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Write the balanced equation for the reaction between hydrochloric acid and sodium hydroxide.",
       "Explain the difference between a mixture and a compound.",
@@ -355,7 +347,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["Which kingdom does a mushroom belong to?", "Fungi", "Plantae", "Animalia", "Protista"],
       ["What type of reproduction involves two parents?", "Sexual", "Asexual", "Binary fission", "Budding"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain the difference between homologous chromosomes and sex chromosomes.",
       "Describe three adaptations of the camel for desert life.",
@@ -386,7 +377,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is deforestation?", "Cutting down forests", "Planting trees", "Forest fire", "Flooding"],
       ["What is the approximate population of Kenya?", "55 million", "30 million", "70 million", "100 million"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain three factors that influence climate in Kenya.",
       "What are the effects of deforestation? Give three points.",
@@ -417,7 +407,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["Which Kenyan court case established rights of minorities?", "Njoya case", "Nyayo case", "Wanjiku case", "Kenyatta case"],
       ["What does devolution mean in Kenya?", "Power to counties", "Power to president", "Power to courts", "Power to parliament"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain three causes of the Mau Mau uprising in Kenya.",
       "What are the branches of the Kenyan government? Describe the role of each.",
@@ -448,7 +437,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is depreciation?", "Decrease in asset value", "Increase in value", "Same value", "Zero value"],
       ["Which document is issued when goods are returned?", "Credit note", "Debit note", "Invoice", "Receipt"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain the difference between fixed costs and variable costs. Give two examples of each.",
       "What are the four functions of management?",
@@ -479,7 +467,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["What is compost manure made from?", "Decomposed organic waste", "Chemical powder", "Animal blood", "Rock dust"],
       ["What is the main purpose of fencing a farm?", "Keep out animals", "Decoration", "Shade crops", "Mark water lines"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "Explain three methods of soil conservation.",
       "What are the benefits of mixed farming?",
@@ -510,7 +497,6 @@ const QUESTIONS: Record<string, { mcq: string[][]; short: string[]; long: string
       ["Which process removes material from a workpiece?", "Cutting", "Joining", "Bending", "Measuring"],
       ["What is the purpose of a technical drawing?", "To communicate design ideas", "To decorate", "To calculate costs", "To paint"],
     ],
-    mcqAnswers: ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
     short: [
       "List five safety rules in a workshop.",
       "Explain the difference between a first angle and third angle projection in technical drawing.",
@@ -550,10 +536,18 @@ const PAPERS: { grade: number; subject: string; term: string; assessmentType: st
   { grade: 12, subject: "Mathematics", term: "Term 3", assessmentType: "KCSE" },
 ];
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 function generatePaperContent(combo: { grade: number; subject: string; term: string; assessmentType: string }): PaperContent {
   const q = QUESTIONS[combo.subject];
   if (!q) {
-    // Fallback to Mathematics questions for subjects not in our bank
     const mathQ = QUESTIONS["Mathematics"];
     return generateContentFromQuestions(combo, mathQ);
   }
@@ -562,15 +556,24 @@ function generatePaperContent(combo: { grade: number; subject: string; term: str
 
 function generateContentFromQuestions(
   combo: { grade: number; subject: string; term: string; assessmentType: string },
-  q: { mcq: string[][]; short: string[]; long: string[]; mcqAnswers: string[]; shortAnswers: string[]; longAnswers: string[] }
+  q: { mcq: string[][]; short: string[]; long: string[]; shortAnswers: string[]; longAnswers: string[] }
 ): PaperContent {
-  const mcqQuestions: Question[] = q.mcq.map((item, i) => ({
-    number: i + 1,
-    question: item[0],
-    options: [`A) ${item[1]}`, `B) ${item[2]}`, `C) ${item[3]}`, `D) ${item[4]}`],
-    answer: q.mcqAnswers[i],
-    marks: 1,
-  }));
+  const mcqQuestions: Question[] = q.mcq.map((item, i) => {
+    // item[0] = question, item[1] = correct answer, item[2-4] = distractors
+    const correctAnswer = item[1];
+    const distractors = item.slice(2);
+    // Shuffle all 4 options together
+    const allOptions = shuffleArray([correctAnswer, ...distractors]);
+    const correctIndex = allOptions.indexOf(correctAnswer);
+    const labels = ["A", "B", "C", "D"];
+    return {
+      number: i + 1,
+      question: item[0],
+      options: allOptions.map((opt, oi) => `${labels[oi]}) ${opt}`),
+      answer: labels[correctIndex],
+      marks: 1,
+    };
+  });
 
   const shortQuestions: Question[] = q.short.map((question, i) => ({
     number: 11 + i,
