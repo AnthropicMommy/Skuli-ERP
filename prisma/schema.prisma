@@ -224,6 +224,7 @@ model Student {
   notifications Notification[]
   profile       StudentProfile?
   mwalimuSessions MwalimuSession[]
+  testRevisions   TestRevision[]
   studyTimetables StudyTimetable[]
 
   @@unique([schoolId, admissionNo])
@@ -719,6 +720,26 @@ model MwalimuSession {
 
   @@index([studentId])
   @@map("mwalimu_sessions")
+}
+
+// ─── Test Revision (Stores test results for AI revision) ──
+
+model TestRevision {
+  id           String   @id @default(cuid())
+  studentId    String
+  subject      String
+  grade        String
+  title        String
+  totalMarks   Int
+  score        Int
+  percentage   Float
+  questions    Json     // Full questions + answers + student answers + explanations
+  createdAt    DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@map("test_revisions")
 }
 
 // ─── Student Study Timetable ────────────────────────────

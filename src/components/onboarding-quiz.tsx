@@ -62,16 +62,20 @@ export function OnboardingQuiz() {
   async function handleSubmit() {
     setLoading(true);
     setError("");
-    const res = await fetch("/api/student-profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ grade, subjects: selectedSubjects, challenge, goal }),
-    });
-    if (res.ok) {
-      router.push("/student");
-    } else {
-      const data = await res.json();
-      setError(data.error || "Something went wrong");
+    try {
+      const res = await fetch("/api/student-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ grade, subjects: selectedSubjects, challenge, goal }),
+      });
+      if (res.ok) {
+        router.push("/student");
+      } else {
+        const data = await res.json();
+        setError(data.error || "Something went wrong");
+      }
+    } catch {
+      setError("Network error — please check your connection and try again");
     }
     setLoading(false);
   }

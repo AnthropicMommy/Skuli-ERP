@@ -45,6 +45,12 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function getTokenFromRequest(req: Request): string | null {
+  // Check Authorization header first
+  const authHeader = req.headers.get("authorization") || "";
+  if (authHeader.startsWith("Bearer ")) {
+    return authHeader.slice(7);
+  }
+  // Fallback to cookie
   const cookieHeader = req.headers.get("cookie") || "";
   const match = cookieHeader.match(/skuli_token=([^;]+)/);
   return match ? match[1] : null;

@@ -16,7 +16,6 @@ interface SessionInfo {
 
 export function MwalimuChat() {
   const [open, setOpen] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -74,111 +73,109 @@ export function MwalimuChat() {
         if (data.session) {
           setSession(data.session);
         }
+      } else {
+        const errMsg = data.error || "Something went wrong. Please try again.";
+        setMessages((prev) => [...prev, { role: "assistant", content: errMsg }]);
       }
-    } catch {}
+    } catch {
+      setMessages((prev) => [...prev, { role: "assistant", content: "Network error. Check your connection and try again." }]);
+    }
 
     setLoading(false);
   }
 
-  if (!open) {
-    return (
+  return (
+    <>
+      {/* Toggle button in sidebar */}
       <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 bg-primary text-primary-foreground w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-primary/90 transition z-50 accent-glow"
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors ${
+          open
+            ? "bg-[var(--sidebar-accent)] text-[var(--text-primary)]"
+            : "text-[var(--text-secondary)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--text-primary)]"
+        }`}
       >
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 20.105V4.875A2.25 2.25 0 016 2.625h12A2.25 2.25 0 0120.25 4.875v10.5A2.25 2.25 0 0118 17.625H6.75a.75.75 0 00-.75.75v1.5" />
         </svg>
-      </button>
-    );
-  }
-
-  return (
-    <div className={`fixed z-50 flex flex-col bg-[var(--surface)] border border-border ${
-      fullscreen ? "inset-0" : "bottom-6 right-6 w-80 h-96 rounded-xl"
-    }`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-[var(--background)]">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg border border-border bg-[var(--surface)] flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="26" height="26" rx="7" stroke="currentColor" strokeWidth="1.5" className="text-primary" opacity="0.5" />
-              <path d="M9 18V12.5L14 9L19 12.5V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-[var(--text-primary)]">Mwalimu</p>
-            <p className="text-xs text-[var(--text-tertiary)]">AI Learning Assistant</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <button onClick={() => setFullscreen(!fullscreen)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] p-1">
-            {fullscreen ? (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" /></svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
-            )}
-          </button>
-          <button onClick={() => setOpen(false)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] p-1">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Session info for independent students */}
-      {isIndependent && session && (
-        <div className="px-4 py-1.5 border-b border-border bg-[var(--background)]">
-          <p className="text-xs text-[var(--text-tertiary)]">Free unlimited sessions — learn as much as you want</p>
-        </div>
-      )}
-
-      {/* Messages area */}
-
-      {!subject && messages.length === 0 && (
-        <div className="p-4">
-          <p className="text-sm text-[var(--text-secondary)] mb-3">What subject do you need help with?</p>
-          <div className="flex flex-wrap gap-2">
-            {["Mathematics", "English", "Kiswahili", "Science", "Social Studies"].map((s) => (
-              <button key={s} onClick={() => { setSubject(s); setMessages([{ role: "assistant", content: `Great! I'm ready to help you with ${s}. What would you like to learn?` }]); }} className="text-xs bg-[var(--surface-hover)] text-[var(--text-secondary)] px-3 py-1.5 rounded-full border border-border hover:bg-[var(--background)] hover:text-[var(--text-primary)] transition">
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-              msg.role === "user"
-                ? "bg-[var(--surface-hover)] text-[var(--text-primary)] rounded-br-sm"
-                : "bg-[var(--background)] text-[var(--text-secondary)] border border-border rounded-bl-sm"
-            }`}>
-              {msg.content}
-            </div>
-          </div>
-        ))}
-        {loading && (
-          <div className="flex justify-start">
-            <div className="bg-[var(--background)] border border-border rounded-lg px-3 py-2 text-sm text-[var(--text-tertiary)] rounded-bl-sm">Thinking...</div>
-          </div>
+        Mwalimu AI
+        {messages.length > 0 && (
+          <span className="ml-auto w-2 h-2 rounded-full bg-[var(--accent)]" />
         )}
-        <div ref={messagesEndRef} />
-      </div>
+      </button>
 
-      <form onSubmit={handleSend} className="border-t border-border p-3 flex gap-2 bg-[var(--background)]">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={sessionError ? "Session ended" : "Ask Mwalimu..."}
-          disabled={!!sessionError}
-          className="flex-1 px-3 py-1.5 border border-border rounded-lg text-sm bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-[var(--border-strong)] transition-colors disabled:opacity-50"
-        />
-        <button type="submit" disabled={loading || !input.trim() || !!sessionError} className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-primary/90 transition disabled:opacity-50">
-          Send
-        </button>
-      </form>
-    </div>
+      {/* Chat panel — slides open below the sidebar */}
+      {open && (
+        <div className="border-t border-border bg-[var(--background)] flex flex-col" style={{ height: "400px" }}>
+          {/* Header */}
+          <div className="flex items-center justify-between px-3 py-2 border-b border-border shrink-0">
+            <div>
+              <p className="text-xs font-medium text-[var(--text-primary)]">Mwalimu</p>
+              <p className="text-[10px] text-[var(--text-tertiary)]">AI Learning Assistant</p>
+            </div>
+            <button onClick={() => setOpen(false)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] p-1">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+            </button>
+          </div>
+
+          {/* Session info */}
+          {isIndependent && session && (
+            <div className="px-3 py-1 border-b border-border shrink-0">
+              <p className="text-[10px] text-[var(--text-tertiary)]">Free unlimited sessions</p>
+            </div>
+          )}
+
+          {/* Subject picker */}
+          {!subject && messages.length === 0 && (
+            <div className="p-3 shrink-0">
+              <p className="text-xs text-[var(--text-secondary)] mb-2">What subject?</p>
+              <div className="flex flex-wrap gap-1.5">
+                {["Mathematics", "English", "Kiswahili", "Science", "Social Studies"].map((s) => (
+                  <button key={s} onClick={() => { setSubject(s); setMessages([{ role: "assistant", content: `Ready to help with ${s}. What would you like to learn?` }]); }} className="text-[10px] bg-[var(--surface-hover)] text-[var(--text-secondary)] px-2 py-1 rounded border border-border hover:bg-[var(--background)] hover:text-[var(--text-primary)] transition">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[85%] rounded-lg px-2.5 py-1.5 text-xs ${
+                  msg.role === "user"
+                    ? "bg-[var(--surface-hover)] text-[var(--text-primary)] rounded-br-sm"
+                    : "bg-[var(--background)] text-[var(--text-secondary)] border border-border rounded-bl-sm"
+                }`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-[var(--background)] border border-border rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-tertiary)] rounded-bl-sm">Thinking...</div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <form onSubmit={handleSend} className="border-t border-border p-2 flex gap-1.5 shrink-0">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={sessionError ? "Session ended" : "Ask Mwalimu..."}
+              disabled={!!sessionError}
+              className="flex-1 px-2.5 py-1.5 border border-border rounded-lg text-xs bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-[var(--border-strong)] transition-colors disabled:opacity-50"
+            />
+            <button type="submit" disabled={loading || !input.trim() || !!sessionError} className="bg-primary text-primary-foreground text-xs font-medium px-2.5 py-1.5 rounded-lg hover:bg-primary/90 transition disabled:opacity-50">
+              Send
+            </button>
+          </form>
+        </div>
+      )}
+    </>
   );
 }

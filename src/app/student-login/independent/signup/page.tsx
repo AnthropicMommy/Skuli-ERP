@@ -17,18 +17,21 @@ export default function IndependentSignupPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const res = await fetch("/api/auth/student/independent-signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, grade, password }),
-    });
-    if (res.ok) {
+    try {
+      const res = await fetch("/api/auth/student/independent-signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, grade, password }),
+      });
       const data = await res.json();
-      document.cookie = `skuli_token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
-      router.push("/student-login/independent/onboarding");
-    } else {
-      const data = await res.json();
-      setError(data.error || "Signup failed");
+      if (res.ok) {
+        document.cookie = `skuli_token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        router.push("/student-login/independent/onboarding");
+      } else {
+        setError(data.error || "Signup failed");
+      }
+    } catch {
+      setError("Network error — please check your connection and try again");
     }
     setLoading(false);
   }

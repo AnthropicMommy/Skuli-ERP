@@ -20,6 +20,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/enrollments(.*)",
   "/api/claim-class(.*)",
   "/api/mwalimu(.*)",
+  "/api/test-revision(.*)",
   "/api/materials(.*)",
   "/api/revision-papers(.*)",
   "/api/student-profile(.*)",

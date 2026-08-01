@@ -21,7 +21,7 @@ export default function StudentLoginPage() {
         <SignIn
           routing="path"
           path="/student-login"
-          signUpUrl="/student-login"
+          signUpUrl="/student-sign-up"
           fallbackRedirectUrl="/student"
           appearance={{
             elements: {

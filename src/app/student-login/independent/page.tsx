@@ -15,18 +15,21 @@ export default function IndependentLoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const res = await fetch("/api/auth/student/independent-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    if (res.ok) {
+    try {
+      const res = await fetch("/api/auth/student/independent-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
       const data = await res.json();
-      document.cookie = `skuli_token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
-      router.push("/student");
-    } else {
-      const data = await res.json();
-      setError(data.error || "Invalid credentials");
+      if (res.ok) {
+        document.cookie = `skuli_token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        router.push("/student");
+      } else {
+        setError(data.error || "Invalid credentials");
+      }
+    } catch {
+      setError("Network error — please check your connection and try again");
     }
     setLoading(false);
   }

@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default function HomePage() {
   const parallaxOffset = useScrollParallax(0.15);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -29,6 +30,8 @@ export default function HomePage() {
             </svg>
             <span className="text-[15px] font-semibold tracking-[-0.03em] text-[var(--text-primary)]">Skuli</span>
           </Link>
+
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/login" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200">
               Staff Login
@@ -41,12 +44,46 @@ export default function HomePage() {
             </Link>
             <ThemeToggle />
           </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
+          >
+            <svg className="w-5 h-5 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              {mobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              )}
+            </svg>
+          </button>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-[var(--background)]/95 backdrop-blur-md">
+            <div className="container py-4 space-y-2">
+              <Link href="/student-login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-lg text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors">
+                Student Login
+              </Link>
+              <Link href="/portal/login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-lg text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors">
+                Parent Login
+              </Link>
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-lg text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors">
+                Staff Login
+              </Link>
+              <div className="pt-2 px-4">
+                <ThemeToggle />
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <main>
         {/* ─── Hero ─── */}
-        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <section className="relative min-h-[80vh] sm:min-h-screen flex items-center pt-24 sm:pt-20 overflow-hidden">
           {/* Background grid with parallax */}
           <div
             className="absolute inset-0 grid-bg opacity-60"
@@ -64,15 +101,15 @@ export default function HomePage() {
             <ScrollReveal>
               <div className="max-w-3xl">
                 <h1
-                  className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-[-0.02em] leading-[1.05] text-[var(--text-primary)]"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-[-0.02em] leading-[1.05] text-[var(--text-primary)]"
                   style={{ fontFamily: "Geist, Inter, sans-serif" }}
                 >
                   Making Schools Great Again
                 </h1>
-                <p className="mt-6 text-base lg:text-lg text-[var(--text-secondary)] leading-relaxed max-w-xl">
+                <p className="mt-4 sm:mt-6 text-sm sm:text-base lg:text-lg text-[var(--text-secondary)] leading-relaxed max-w-xl">
                   Assignments, learning resources, report cards, and parent communication — in one place. Built around the student. Free onboarding.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="https://cal.com/peter-makau-scales"
                     target="_blank"
@@ -97,7 +134,7 @@ export default function HomePage() {
         </section>
 
         {/* ─── Role Picker ─── */}
-        <section id="roles" className="py-24 lg:py-32 relative">
+        <section id="roles" className="py-16 sm:py-24 lg:py-32 relative">
           <div className="container">
             <ScrollReveal>
               <h2
@@ -108,7 +145,7 @@ export default function HomePage() {
               </h2>
             </ScrollReveal>
 
-            <div className="grid sm:grid-cols-2 gap-4 mt-12 lg:mt-16">
+            <div className="grid sm:grid-cols-2 gap-4 mt-8 sm:mt-12 lg:mt-16">
               {[
                 {
                   icon: (
@@ -161,7 +198,7 @@ export default function HomePage() {
                     href={role.href}
                     target={role.accent ? "_blank" : undefined}
                     rel={role.accent ? "noopener noreferrer" : undefined}
-                    className="group block rounded-xl border border-border bg-[var(--surface)] p-6 transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-hover)]"
+                    className="group block rounded-xl border border-border bg-[var(--surface)] p-5 sm:p-6 transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-hover)]"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center justify-center w-10 h-10 rounded-lg border border-border bg-background">
@@ -198,7 +235,7 @@ export default function HomePage() {
         </section>
 
         {/* ─── Features ─── */}
-        <section id="features" className="py-24 lg:py-32 relative border-t border-border">
+        <section id="features" className="py-16 sm:py-24 lg:py-32 relative border-t border-border">
           <div className="container">
             <ScrollReveal>
               <div className="eyebrow mb-4">Features</div>
@@ -210,7 +247,7 @@ export default function HomePage() {
               </h2>
             </ScrollReveal>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border rounded-xl overflow-hidden border border-border mt-12 lg:mt-16">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border rounded-xl overflow-hidden border border-border mt-8 sm:mt-12 lg:mt-16">
               {[
                 {
                   icon: (
@@ -268,7 +305,7 @@ export default function HomePage() {
                 },
               ].map((feature, i) => (
                 <ScrollReveal key={feature.title} delay={60 * ((i % 3) + 1)}>
-                  <div className="bg-[var(--surface)] p-6 lg:p-8 transition-colors hover:bg-[var(--surface-hover)]">
+                  <div className="bg-[var(--surface)] p-5 sm:p-6 lg:p-8 transition-colors hover:bg-[var(--surface-hover)]">
                     <div className="flex items-center justify-center w-10 h-10 rounded-lg border border-border bg-background mb-4">
                       <span className="text-[var(--text-secondary)]">{feature.icon}</span>
                     </div>
@@ -286,7 +323,7 @@ export default function HomePage() {
         </section>
 
         {/* ─── CTA ─── */}
-        <section className="py-24 lg:py-32 relative overflow-hidden border-t border-border">
+        <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden border-t border-border">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -297,7 +334,7 @@ export default function HomePage() {
             <ScrollReveal>
               <div className="max-w-2xl mx-auto text-center">
                 <h2
-                  className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.02em] text-[var(--text-primary)] leading-[1.1]"
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.02em] text-[var(--text-primary)] leading-[1.1]"
                   style={{ fontFamily: "Geist, Inter, sans-serif" }}
                 >
                   Ready to set up your school?
@@ -322,7 +359,7 @@ export default function HomePage() {
       </main>
 
       {/* ─── Footer ─── */}
-      <footer className="border-t border-border py-12">
+      <footer className="border-t border-border py-8 sm:py-12">
         <div className="container">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex flex-col items-center md:items-start gap-3">

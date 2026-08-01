@@ -237,6 +237,20 @@ export default function StudyTimetablePage() {
             </div>
           );
         })}
+
+        {/* Empty state when no entries at all */}
+        {entries.length === 0 && !editing && (
+          <div className="text-center py-12">
+            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-primary/20">
+              <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-[var(--text-primary)]">No study plan yet</p>
+            <p className="text-xs text-[var(--text-tertiary)] mt-1 mb-4">Plan your study time to stay on track</p>
+            <button onClick={() => setEditing(true)} className="text-xs text-primary font-medium hover:underline">Start building your timetable</button>
+          </div>
+        )}
       </div>
 
       {/* Add modal — simple AM/PM picker */}
