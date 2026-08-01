@@ -166,6 +166,29 @@ ${JSON.stringify(questionsForGrading)}`;
       }
     }
 
+    // Save graded test as revision paper for later reattempt
+    try {
+      await prisma.revisionPaper.create({
+        data: {
+          title: `${subject} AI Test - Grade ${gradeNum} ${gradeLevel}`,
+          grade: String(gradeNum),
+          subject: subject,
+          term: "Term 1", // Default, could be enhanced
+          assessmentType: "AI Generated Test",
+          year: new Date().getFullYear(),
+          content: JSON.stringify({
+            questions: questionsForGrading,
+            studentAnswers,
+            result: result,
+            timestamp: new Date().toISOString()
+          }),
+        },
+      });
+    } catch (saveError) {
+      console.error("Failed to save revision paper:", saveError);
+      // Don't fail the request if saving revision paper fails
+    }
+
     return NextResponse.json({
       score: result.score,
       totalMarks: result.totalMarks,
