@@ -104,6 +104,7 @@ Mix MCQ (4 options, 1 mark) and short answer (options null, 2-3 marks). Kenyan c
     });
   } catch (error) {
     console.error("Test generation error:", error);
+      return NextResponse.json({ error: "Failed to generate test. Please try again.", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
     return NextResponse.json({ error: "Failed to generate test. Please try again." }, { status: 500 });
   }
 }
@@ -199,6 +200,5 @@ ${JSON.stringify(questionsForGrading)}`;
     });
   } catch (error) {
     console.error("Test grading error:", error);
-    return NextResponse.json({ error: "Failed to grade test. Please try again." }, { status: 500 });
-  }
-}
+      return NextResponse.json({ error: "Failed to grade test. Please try again.", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
+      return NextResponse.json({ error: "Failed to grade test. Please try again.", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
