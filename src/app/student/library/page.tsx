@@ -10,7 +10,10 @@ export default async function StudentLibraryPage() {
       take: 30,
     }),
     prisma.sourceMaterial.findMany({
-      where: { materialType: { not: "curriculum_design" } },
+      where: { 
+        materialType: { not: "curriculum_design" },
+        source: { not: "teacher.co.ke" }, // Only freeexams.co.ke - actual student papers
+      },
       orderBy: [{ grade: "asc" }, { subject: "asc" }],
       select: {
         id: true,

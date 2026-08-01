@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyToken, getTokenFromRequest } from "@/lib/auth";
 import { callAI } from "@/lib/ai-providers";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -21,7 +22,25 @@ export async function POST(req: Request) {
     else if (grade <= 9) gradeLevel = "Junior Secondary";
     else gradeLevel = "Senior Secondary";
 
-    const prompt = `Generate a ${difficulty} Grade ${grade} ${subject} CBC test: ${questionCount} questions${topic ? ` on ${topic}` : ""}.
+    // Fetch teacher.co.ke materials as reference for generating high-quality questions
+    let referenceMaterials = "";
+    try {
+      const teacherMaterials = await prisma.sourceMaterial.findMany({
+        where: { 
+          source: "teacher.co.ke",
+          subject: subject,
+          grade: String(grade),
+          materialType: { not: "curriculum_design" },
+        },
+        take: 3,
+        select: { title: true, description: true, materialType: true },
+      });
+      if (teacherMaterials.length > 0) {
+        referenceMaterials = `\n\nReference materials (teacher notes - use for question style/difficulty):\n${teacherMaterials.map((m) => `- ${m.title} (${m.materialType}): ${m.description || "no description"}`).join("\n")}`;
+      }
+    } catch {}
+
+    const prompt = `Generate a ${difficulty} Grade ${grade} ${subject} CBC test: ${questionCount} questions${topic ? ` on ${topic}` : ""}.${referenceMaterials}
 
 Return ONLY this JSON:
 {"title":"test title","questions":[{"number":1,"question":"text","options":["A. opt1","B. opt2","C. opt3","D. opt4"],"answer":"B. opt2","marks":1,"explanation":"why"}]}
