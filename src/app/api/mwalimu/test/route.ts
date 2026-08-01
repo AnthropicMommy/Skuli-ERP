@@ -188,7 +188,6 @@ ${JSON.stringify(questionsForGrading)}`;
       });
     } catch (saveError) {
       console.error("Failed to save revision paper:", saveError);
-      // Don't fail the request if saving revision paper fails
     }
 
     return NextResponse.json({
@@ -200,5 +199,6 @@ ${JSON.stringify(questionsForGrading)}`;
     });
   } catch (error) {
     console.error("Test grading error:", error);
-      return NextResponse.json({ error: "Failed to grade test. Please try again.", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
-      return NextResponse.json({ error: "Failed to grade test. Please try again.", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
+    return NextResponse.json({ error: "Failed to grade test. Please try again.", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
+  }
+}
