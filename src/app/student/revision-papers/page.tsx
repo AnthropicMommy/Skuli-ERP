@@ -196,7 +196,7 @@ export default function RevisionPapersPage() {
     }
 
     try {
-      const token = document.cookie.split("; ").find((c) => c.startsWith("student_token="))?.split("=")[1];
+      const token = document.cookie.split("; ").find((c) => c.startsWith("skuli_token="))?.split("=")[1];
       const res = await fetch("/api/revision-papers/grade", {
         method: "POST",
         headers: {

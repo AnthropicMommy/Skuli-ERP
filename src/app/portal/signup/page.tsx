@@ -1,7 +1,41 @@
-import { SignUp } from "@clerk/nextjs";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ParentSignupPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/parent/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, firstName, lastName, phone }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Signup failed");
+      localStorage.setItem("token", data.token);
+      document.cookie = `token=${data.token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+      router.push("/portal");
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
@@ -16,29 +50,40 @@ export default function ParentSignupPage() {
           <p className="text-sm text-[var(--text-tertiary)] mt-1">Create an account to track your child&apos;s progress.</p>
         </div>
 
-        <SignUp
-          routing="path"
-          path="/portal/signup"
-          signInUrl="/portal/login"
-          fallbackRedirectUrl="/portal"
-          appearance={{
-            elements: {
-              rootBox: "mx-auto",
-              card: "bg-[var(--surface)] border border-border shadow-none",
-              headerTitle: "text-[var(--text-primary)]",
-              headerSubtitle: "text-[var(--text-tertiary)]",
-              socialButtonsBlockButton: "bg-[var(--background)] border border-border text-[var(--text-primary)] hover:bg-[var(--surface-hover)]",
-              socialButtonsBlockButtonText: "text-[var(--text-primary)]",
-              formFieldLabel: "text-[var(--text-primary)]",
-              formFieldInput: "bg-[var(--background)] border-border text-[var(--text-primary)]",
-              formButtonPrimary: "bg-primary hover:bg-primary/90",
-              footerActionLink: "text-primary hover:text-primary/80",
-            },
-          }}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">First Name</label>
+              <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-[var(--text-primary)] bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Last Name</label>
+              <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-[var(--text-primary)] bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-[var(--text-primary)] bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Phone (optional)</label>
+            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-[var(--text-primary)] bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full px-3 py-2 border border-[var(--border)] rounded-lg text-[var(--text-primary)] bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+          </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <button type="submit" disabled={loading} className="w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-[var(--primary)] hover:bg-[var(--primary)]/90 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:opacity-50">
+            {loading ? "Creating account..." : "Create account"}
+          </button>
+        </form>
 
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block transition-colors">Back to home</Link>
+        <div className="text-center mt-6">
+          <Link href="/portal/login" className="text-sm text-[var(--text-primary)] hover:text-[var(--text-primary)]/80">Already have an account? Sign in</Link>
+        </div>
+        <div className="text-center mt-6">
+          <Link href="/" className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] block">Back to home</Link>
         </div>
       </div>
     </div>

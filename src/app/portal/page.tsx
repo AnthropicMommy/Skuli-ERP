@@ -1,24 +1,28 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function PortalHomePage() {
-  const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [studentName, setStudentName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isLoaded) return;
-    if (!isSignedIn) {
+    const token = getToken();
+    if (!token) {
       router.push("/portal/login");
       return;
     }
+    setIsSignedIn(true);
+    setIsLoaded(true);
 
-    fetch("/api/parent/student")
+    fetch("/api/parent/student", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((r) => r.json())
       .then((data) => {
         if (data.error) {
@@ -32,7 +36,14 @@ export default function PortalHomePage() {
         setStudentName("your child");
         setLoading(false);
       });
-  }, [isLoaded, isSignedIn, router]);
+  }, [router]);
+
+  function getToken(): string | null {
+    if (typeof window === "undefined") return null;
+    const fromCookie = document.cookie.split("; ").find((row) => row.startsWith("token="));
+    if (fromCookie) return fromCookie.split("=")[1];
+    return localStorage.getItem("token");
+  }
 
   if (loading || !isLoaded) {
     return (
