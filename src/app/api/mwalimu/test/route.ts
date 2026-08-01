@@ -182,6 +182,7 @@ ${JSON.stringify(questionsForGrading)}`;
             result: result,
             timestamp: new Date().toISOString()
           }),
+          fileUrl: "", // placeholder; we store the full content in the 'content' field
         },
       });
     } catch (saveError) {
