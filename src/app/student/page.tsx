@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MwalimuCharacter } from "@/components/mwalimu-character";
 
 interface StudentData {
   name: string;
@@ -58,21 +57,6 @@ export default function StudentDashboardPage() {
           {data?.isIndependent && <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">Independent Learner</span>}
         </p>
       </div>
-
-      {/* Mwalimu Hero */}
-      <Link href="/student/mwalimu" className="block mb-8 group">
-        <div className="bg-[var(--surface)] border border-border rounded-2xl p-6 flex items-center gap-6 hover:border-primary/30 transition-all">
-          <MwalimuCharacter size="lg" message={`Hey ${data?.name?.split(" ")[0] || "there"}! Ready to learn?`} />
-          <div className="flex-1">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-primary transition-colors">Mwalimu AI</h2>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">Your personal learning assistant. Ask anything, take tests, track your progress.</p>
-            <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-              Start learning
-              <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-            </div>
-          </div>
-        </div>
-      </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-[var(--surface)] border border-border rounded-xl p-6">
