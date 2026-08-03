@@ -25,6 +25,8 @@ const isPublicRoute = createRouteMatcher([
   "/api/revision-papers(.*)",
   "/api/student-profile(.*)",
   "/api/study-timetable(.*)",
+  "/api/source-materials(.*)",
+  "/api/seed-source-materials(.*)",
   "/report(.*)",
 ]);
 
