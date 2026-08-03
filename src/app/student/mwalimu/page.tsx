@@ -43,6 +43,31 @@ function MwalimuContent() {
         if (payload.isIndependent) setIsIndependent(true);
       }
     } catch {}
+
+    // Load chat history from DB
+    (async () => {
+      try {
+        const match = document.cookie.match(/skuli_token=([^;]+)/);
+        const token = match?.[1];
+        if (!token) return;
+        const res = await fetch("/api/mwalimu/history?limit=50", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.messages?.length > 0) {
+          const loaded = data.messages
+            .filter((m: { role: string }) => m.role === "user" || m.role === "assistant")
+            .map((m: { role: string; content: string; subject: string }) => ({
+              role: m.role as "user" | "assistant",
+              content: m.content,
+            }));
+          setMessages(loaded);
+          const lastSubject = data.messages[data.messages.length - 1]?.subject;
+          if (lastSubject && lastSubject !== "general") setSubject(lastSubject);
+        }
+      } catch {}
+    })();
   }, []);
 
   useEffect(() => {

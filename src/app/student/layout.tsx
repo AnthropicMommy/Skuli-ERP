@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useClerk } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { CookieConsent } from "@/components/cookie-consent";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -21,12 +20,11 @@ const NAV_ITEMS = [
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { signOut } = useClerk();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   function handleSignOut() {
     document.cookie = "skuli_token=; path=/; max-age=0";
-    signOut(() => router.push("/student-login"));
+    router.push("/student-login");
   }
 
   return (
