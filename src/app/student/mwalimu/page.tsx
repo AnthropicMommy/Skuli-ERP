@@ -53,20 +53,23 @@ function MwalimuContent() {
         const res = await fetch("/api/mwalimu/history?limit=50", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) return;
         const data = await res.json();
         if (data.messages?.length > 0) {
           const loaded = data.messages
             .filter((m: { role: string }) => m.role === "user" || m.role === "assistant")
-            .map((m: { role: string; content: string; subject: string }) => ({
+            .map((m: { role: string; content: string }) => ({
               role: m.role as "user" | "assistant",
               content: m.content,
             }));
-          setMessages(loaded);
-          const lastSubject = data.messages[data.messages.length - 1]?.subject;
-          if (lastSubject && lastSubject !== "general") setSubject(lastSubject);
+          if (loaded.length > 0) {
+            setMessages(loaded);
+            const lastSubject = data.messages[data.messages.length - 1]?.subject;
+            if (lastSubject && lastSubject !== "general") setSubject(lastSubject);
+          }
         }
-      } catch {}
+      } catch (err) {
+        console.error("Failed to load chat history:", err);
+      }
     })();
   }, []);
 
@@ -154,10 +157,10 @@ function MwalimuContent() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)]">
-      <div className="mb-6 flex items-start justify-between">
+      <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Mwalimu AI</h1>
-          <p className="text-[var(--text-secondary)] mt-1">Your personal CBC learning assistant</p>
+          <p className="text-[var(--text-secondary)] mt-1.5">Your personal CBC learning assistant</p>
         </div>
         <Link
           href="/student/mwalimu/test"
@@ -171,11 +174,11 @@ function MwalimuContent() {
       </div>
 
       {!subject && messages.length === 0 && !searchParams.get("prefill") && (
-        <div className="bg-[var(--surface)] border border-border rounded-xl p-6 mb-4">
-          <p className="text-sm text-[var(--text-secondary)] mb-3">What subject do you need help with?</p>
-          <div className="flex flex-wrap gap-2">
+        <div className="bg-[var(--surface)] border border-border rounded-xl p-6 mb-6">
+          <p className="text-sm text-[var(--text-secondary)] mb-4">What subject do you need help with?</p>
+          <div className="flex flex-wrap gap-2.5">
             {["Mathematics", "English", "Kiswahili", "Science", "Social Studies"].map((s) => (
-              <button key={s} onClick={() => { setSubject(s); setMessages([{ role: "assistant", content: `Great! I'm ready to help you with ${s}. What would you like to learn?` }]); }} className="text-xs bg-[var(--background)] text-[var(--text-secondary)] px-4 py-2 rounded-lg border border-border hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition">
+              <button key={s} onClick={() => { setSubject(s); setMessages([{ role: "assistant", content: `Great! I'm ready to help you with ${s}. What would you like to learn?` }]); }} className="text-xs bg-[var(--background)] text-[var(--text-secondary)] px-4 py-2.5 rounded-lg border border-border hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition">
                 {s}
               </button>
             ))}
@@ -184,27 +187,27 @@ function MwalimuContent() {
       )}
 
       {isIndependent && session && (
-        <div className="text-xs text-[var(--text-tertiary)] mb-3">Free unlimited sessions — learn as much as you want</div>
+        <div className="text-xs text-[var(--text-tertiary)] mb-4">Free unlimited sessions — learn as much as you want</div>
       )}
 
-      <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+      <div className="flex-1 overflow-y-auto space-y-5 mb-6 px-1">
         {messages.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3 border border-primary/20">
-              <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <div className="text-center py-16">
+            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
+              <svg className="w-7 h-7 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09z" />
               </svg>
             </div>
-            <p className="text-sm text-[var(--text-primary)] font-medium">Ask Mwalimu anything</p>
-            <p className="text-xs text-[var(--text-tertiary)] mt-1">Pick a subject above or just start typing</p>
+            <p className="text-base font-medium text-[var(--text-primary)]">Ask Mwalimu anything</p>
+            <p className="text-sm text-[var(--text-tertiary)] mt-1.5">Pick a subject above or just start typing</p>
           </div>
         )}
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[75%] rounded-xl px-4 py-2.5 text-sm ${
+            <div className={`max-w-[80%] rounded-2xl px-5 py-3 text-sm leading-relaxed ${
               msg.role === "user"
-                ? "bg-[var(--text-primary)] text-[var(--background)] rounded-br-sm"
-                : "bg-[var(--surface)] text-[var(--text-primary)] border border-border rounded-bl-sm"
+                ? "bg-[var(--text-primary)] text-[var(--background)] rounded-br-md"
+                : "bg-[var(--surface)] text-[var(--text-primary)] border border-border rounded-bl-md"
             }`}>
               {msg.content}
             </div>
@@ -212,22 +215,22 @@ function MwalimuContent() {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-[var(--surface)] border border-border rounded-xl px-4 py-2.5 text-sm text-[var(--text-tertiary)] rounded-bl-sm">Thinking...</div>
+            <div className="bg-[var(--surface)] border border-border rounded-2xl rounded-bl-md px-5 py-3 text-sm text-[var(--text-tertiary)]">Thinking...</div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSend} className="flex gap-2 shrink-0">
+      <form onSubmit={handleSend} className="flex gap-3 shrink-0">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={sessionError ? "Session ended" : "Ask Mwalimu..."}
           disabled={!!sessionError}
-          className="flex-1 px-4 py-3 border border-border rounded-xl text-sm bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent)] transition-colors disabled:opacity-50"
+          className="flex-1 px-5 py-3.5 border border-border rounded-xl text-sm bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent)] transition-colors disabled:opacity-50"
         />
-        <button type="submit" disabled={loading || !input.trim() || !!sessionError} className="bg-primary text-[#0A0A0A] font-medium px-5 py-3 rounded-xl hover:bg-primary/90 transition disabled:opacity-50 text-sm">
+        <button type="submit" disabled={loading || !input.trim() || !!sessionError} className="bg-primary text-[#0A0A0A] font-medium px-6 py-3.5 rounded-xl hover:bg-primary/90 transition disabled:opacity-50 text-sm">
           Send
         </button>
       </form>

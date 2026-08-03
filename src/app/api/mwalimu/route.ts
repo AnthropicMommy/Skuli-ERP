@@ -175,7 +175,9 @@ Rules:
         await prisma.mwalimuMessage.create({
           data: { studentId, classId: classId || null, subject: subject || "general", role: "user", content: message },
         });
-      } catch {}
+      } catch (msgErr) {
+        console.error("Failed to save user message:", msgErr);
+      }
     }
 
     try {
@@ -192,7 +194,9 @@ Rules:
           await prisma.mwalimuMessage.create({
             data: { studentId, classId: classId || null, subject: subject || "general", role: "assistant", content: reply },
           });
-        } catch {}
+        } catch (msgErr) {
+          console.error("Failed to save assistant message:", msgErr);
+        }
       }
 
       if (isIndependent && activeSession) {
