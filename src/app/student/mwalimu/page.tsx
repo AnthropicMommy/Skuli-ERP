@@ -34,26 +34,43 @@ function MwalimuContent() {
   }, [messages]);
 
   useEffect(() => {
+    let token = "";
     try {
       const cookie = document.cookie.split("; ").find((c) => c.startsWith("skuli_token="));
       if (cookie) {
-        const token = cookie.split("=")[1];
+        token = cookie.split("=")[1];
         const payload = JSON.parse(atob(token.split(".")[1]));
         if (payload.classId) setClassId(payload.classId);
         if (payload.isIndependent) setIsIndependent(true);
+        console.log("[mwalimu] JWT payload:", payload);
       }
-    } catch {}
+    } catch (e) {
+      console.error("[mwalimu] Failed to parse JWT:", e);
+    }
 
     // Load chat history from DB
     (async () => {
       try {
         const match = document.cookie.match(/skuli_token=([^;]+)/);
-        const token = match?.[1];
-        if (!token) return;
+        const authToken = match?.[1];
+        if (!authToken) {
+          console.warn("[mwalimu] No skuli_token cookie found");
+          return;
+        }
+
+        // Debug: check DB state
+        const debugRes = await fetch("/api/mwalimu/history?debug=1", {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        const debugData = await debugRes.json();
+        console.log("[mwalimu] DB diagnostic:", debugData);
+
+        // Load actual history
         const res = await fetch("/api/mwalimu/history?limit=50", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${authToken}` },
         });
         const data = await res.json();
+        console.log("[mwalimu] History response:", data);
         if (data.messages?.length > 0) {
           const loaded = data.messages
             .filter((m: { role: string }) => m.role === "user" || m.role === "assistant")
@@ -68,7 +85,7 @@ function MwalimuContent() {
           }
         }
       } catch (err) {
-        console.error("Failed to load chat history:", err);
+        console.error("[mwalimu] Failed to load chat history:", err);
       }
     })();
   }, []);
@@ -138,6 +155,8 @@ function MwalimuContent() {
         setLoading(false);
         return;
       }
+
+      console.log("[mwalimu] POST response:", { ok: res.ok, status: res.status, hasReply: !!data.reply, error: data.error });
 
       if (res.ok) {
         setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);

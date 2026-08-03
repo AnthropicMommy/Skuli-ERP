@@ -14,6 +14,22 @@ export async function GET(req: Request) {
     if (!studentId) return NextResponse.json({ error: "Invalid session" }, { status: 401 });
 
     const url = new URL(req.url);
+    const debug = url.searchParams.get("debug");
+
+    if (debug === "1") {
+      // Diagnostic mode: check DB state
+      const totalMessages = await prisma.mwalimuMessage.count();
+      const myMessages = await prisma.mwalimuMessage.count({ where: { studentId } });
+      const anyMessages = await prisma.mwalimuMessage.findMany({ take: 5, orderBy: { createdAt: "desc" }, select: { id: true, studentId: true, role: true, content: true, subject: true, createdAt: true } });
+      return NextResponse.json({
+        studentId,
+        totalMessages,
+        myMessages,
+        recentMessages: anyMessages,
+        JWT_SECRET_SET: !!process.env.JWT_SECRET,
+      });
+    }
+
     const subject = url.searchParams.get("subject") || undefined;
     const limit = Math.min(parseInt(url.searchParams.get("limit") || "50"), 100);
 
@@ -36,6 +52,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ messages });
   } catch (error) {
     console.error("Failed to load history:", error);
-    return NextResponse.json({ error: "Failed to load history" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to load history", detail: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }
