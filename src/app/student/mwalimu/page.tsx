@@ -179,7 +179,7 @@ function MwalimuContent() {
       <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Mwalimu AI</h1>
-          <p className="text-[var(--text-secondary)] mt-1.5">Your personal CBC learning assistant</p>
+          <p className="text-[var(--text-secondary)] mt-1.5">Your personal learning assistant</p>
         </div>
         <Link
           href="/student/mwalimu/test"
@@ -206,7 +206,7 @@ function MwalimuContent() {
       )}
 
       {isIndependent && session && (
-        <div className="text-xs text-[var(--text-tertiary)] mb-4">Free unlimited sessions — learn as much as you want</div>
+        <div className="text-xs text-[var(--text-tertiary)] mb-4">Making learning fun</div>
       )}
 
       <div className="flex-1 overflow-y-auto space-y-5 mb-6 px-1">
