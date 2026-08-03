@@ -175,7 +175,7 @@ function MwalimuContent() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)]">
+    <div className="flex flex-col h-full">
       <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Mwalimu AI</h1>

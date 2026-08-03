@@ -94,7 +94,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
           </Link>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 sm:p-6">
+        <main className={`flex-1 p-4 sm:p-6 ${pathname === "/student/mwalimu" ? "overflow-hidden" : "overflow-auto"}`}>
           {children}
         </main>
       </div>
